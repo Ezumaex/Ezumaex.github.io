@@ -1,0 +1,74 @@
+body {
+    background: rosybrown;
+    font-family: Arial, sans-serif;
+}
+
+.business-card {
+    width: 300px;
+    background: white;
+    padding: 20px;
+    text-align: center;
+    font-size: 16px;
+    margin: 100px auto 0;
+}
+
+.profile-image {
+    max-width: 100%;
+    border-radius: 50%;
+}
+
+p {
+    margin: 5px 0;
+}
+
+a {
+    text-decoration: none;
+}
+
+.full-name {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 12px;
+}
+
+.designation {
+    color: #666;
+    font-size: 14px;
+}
+
+.company {
+    color: rosybrown;
+    font-weight: bold;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 12px 0;
+}
+
+.social-media h2 {
+    font-size: 14px;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.social-media a {
+    display: inline-block;
+    margin: 4px 6px;
+    color: rosybrown;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.portfolio-link {
+    display: inline-block;
+    margin: 8px 0;
+    padding: 6px 20px;
+    background: rosybrown;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+}

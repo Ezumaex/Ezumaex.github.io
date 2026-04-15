@@ -3,31 +3,30 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Site</title>
-
-    <!-- Tailwind via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- React via CDN -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-
-    <!-- Lets you write JSX in the browser -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <title>Business Card</title>
+    <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-<div id="root"></div>
-
-<script type="text/babel">
-    function App() {
-        return (
-            <div className="flex items-center justify-center h-screen bg-gray-100">
-                <h1 className="text-4xl font-bold text-blue-600">Hello World!</h1>
-            </div>
-        );
-    }
-
-    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-</script>
+<div class="business-card">
+    <img
+            class="profile-image"
+            src="https://cdn.freecodecamp.org/curriculum/labs/flower.jpg"
+            alt="Profile photo of a flower"
+    />
+    <p class="full-name">Alex Rivera</p>
+    <p class="designation">Full Stack Developer</p>
+    <p class="company">Nexora Studios</p>
+    <hr />
+    <p>alex.rivera@nexora.dev</p>
+    <p>+1 (555) 842-9301</p>
+    <a class="portfolio-link" href="https://github.com">Portfolio</a>
+    <hr />
+    <div class="social-media">
+        <h2>Connect with me</h2>
+        <a href="https://twitter.com">Twitter</a>
+        <a href="https://linkedin.com">LinkedIn</a>
+        <a href="https://github.com">GitHub</a>
+    </div>
+</div>
 </body>
 </html>
