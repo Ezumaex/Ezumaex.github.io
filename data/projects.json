@@ -6,7 +6,7 @@
     "technologies": ["ESP32", "Arduino", "MQTT", "Node.js", "React", "WebSocket"],
     "repository": "https://github.com/Ezumaex/smarteco-column",
     "liveDemo": "",
-    "image": "assets/images/smarteco-dashboard.png",
+    "image": "assets/images/smarteco-dashboard-live.png",
     "imageAlt": "SmartEco-Column dashboard with controlled air, soil, and water readings in a live local test state",
     "featured": true,
     "status": "Prototype",
