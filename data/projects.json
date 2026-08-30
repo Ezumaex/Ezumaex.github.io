@@ -2,12 +2,12 @@
   {
     "name": "SmartEco-Column",
     "slug": "smarteco-column",
-    "description": "An ESP32 environmental monitoring prototype that streams air, soil, and water readings through MQTT to a Node.js/WebSocket service and a React dashboard.",
+    "description": "An ESP32 environmental monitoring prototype that streams air, soil, and water readings through MQTT to a Node.js/WebSocket service and a React dashboard. Its software path is covered by an automated integration test and GitHub Actions.",
     "technologies": ["ESP32", "Arduino", "MQTT", "Node.js", "React", "WebSocket"],
     "repository": "https://github.com/Ezumaex/smarteco-column",
     "liveDemo": "",
     "image": "assets/images/smarteco-dashboard.png",
-    "imageAlt": "SmartEco-Column dashboard with air, soil, and water monitoring cards in a disconnected local state",
+    "imageAlt": "SmartEco-Column dashboard with controlled air, soil, and water readings in a live local test state",
     "featured": true,
     "status": "Prototype",
     "context": "Personal repository · team project"

@@ -78,7 +78,7 @@
     "personal": [
       {
         "title": "SmartEco-Column",
-        "detail": "Express, MQTT, REST, and WebSocket service",
+        "detail": "Express, MQTT, REST, and WebSocket service with automated integration coverage",
         "url": "https://github.com/Ezumaex/smarteco-column"
       }
     ],
@@ -96,7 +96,7 @@
     "personal": [
       {
         "title": "SmartEco-Column",
-        "detail": "Firmware-to-dashboard environmental sensor pipeline",
+        "detail": "MQTT-to-dashboard software path verified by integration tests; firmware prepared for physical sensors",
         "url": "https://github.com/Ezumaex/smarteco-column"
       }
     ],
