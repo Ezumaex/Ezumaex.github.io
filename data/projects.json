@@ -1,0 +1,28 @@
+[
+  {
+    "name": "SmartEco-Column",
+    "slug": "smarteco-column",
+    "description": "An ESP32 environmental monitoring prototype that streams air, soil, and water readings through MQTT to a Node.js/WebSocket service and a React dashboard.",
+    "technologies": ["ESP32", "Arduino", "MQTT", "Node.js", "React", "WebSocket"],
+    "repository": "https://github.com/Ezumaex/smarteco-column",
+    "liveDemo": "",
+    "image": "assets/images/smarteco-dashboard.png",
+    "imageAlt": "SmartEco-Column dashboard with air, soil, and water monitoring cards in a disconnected local state",
+    "featured": true,
+    "status": "Prototype",
+    "context": "Personal repository · team project"
+  },
+  {
+    "name": "Developer Portfolio",
+    "slug": "developer-portfolio",
+    "description": "A lightweight, accessible GitHub Pages portfolio with data-driven project and certificate collections, responsive layouts, and a maintainable résumé system.",
+    "technologies": ["HTML", "CSS", "JavaScript", "JSON", "GitHub Pages"],
+    "repository": "https://github.com/Ezumaex/Ezumaex.github.io",
+    "liveDemo": "https://ezumaex.github.io/",
+    "image": "assets/images/og.png",
+    "imageAlt": "Joerelle Jay P. Bisnar portfolio social preview graphic",
+    "featured": true,
+    "status": "Active",
+    "context": "Personal repository · individual project"
+  }
+]

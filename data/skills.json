@@ -1,0 +1,161 @@
+[
+  {
+    "name": "JavaScript",
+    "personal": [
+      {
+        "title": "SmartEco-Column",
+        "detail": "Node.js sensor service and React dashboard",
+        "url": "https://github.com/Ezumaex/smarteco-column"
+      },
+      {
+        "title": "Developer Portfolio",
+        "detail": "Data-driven projects and certificate library",
+        "url": "https://github.com/Ezumaex/Ezumaex.github.io"
+      }
+    ],
+    "experience": [],
+    "learning": []
+  },
+  {
+    "name": "Frontend web development",
+    "personal": [
+      {
+        "title": "Developer Portfolio",
+        "detail": "Responsive, accessible portfolio interface",
+        "url": "https://github.com/Ezumaex/Ezumaex.github.io"
+      },
+      {
+        "title": "SmartEco-Column",
+        "detail": "Environmental monitoring dashboard",
+        "url": "https://github.com/Ezumaex/smarteco-column"
+      }
+    ],
+    "experience": [
+      {
+        "title": "Colegio de Muntinlupa MIS",
+        "detail": "Frontend interfaces for university systems"
+      },
+      {
+        "title": "Thermal Expansion Simulator",
+        "detail": "HTML/CSS presentation wrapper for a team Godot project",
+        "url": "https://github.com/rohb22/thermal-expansion-simulator"
+      }
+    ],
+    "learning": []
+  },
+  {
+    "name": "Godot & GDScript",
+    "personal": [],
+    "experience": [
+      {
+        "title": "Thermal Expansion Simulator",
+        "detail": "Interface, scene integration, simulation/controller refactor, and export work",
+        "url": "https://github.com/rohb22/thermal-expansion-simulator/pull/1"
+      }
+    ],
+    "learning": []
+  },
+  {
+    "name": "React",
+    "personal": [
+      {
+        "title": "SmartEco-Column",
+        "detail": "Live environmental monitoring dashboard",
+        "url": "https://github.com/Ezumaex/smarteco-column"
+      }
+    ],
+    "experience": [],
+    "learning": [
+      {
+        "title": "React Essential Training",
+        "detail": "LinkedIn Learning · March 2026",
+        "url": "certifications.html"
+      }
+    ]
+  },
+  {
+    "name": "Node.js",
+    "personal": [
+      {
+        "title": "SmartEco-Column",
+        "detail": "Express, MQTT, REST, and WebSocket service",
+        "url": "https://github.com/Ezumaex/smarteco-column"
+      }
+    ],
+    "experience": [],
+    "learning": [
+      {
+        "title": "Full-Stack Web Development Bootcamp",
+        "detail": "Udemy · March 2025",
+        "url": "certifications.html"
+      }
+    ]
+  },
+  {
+    "name": "ESP32 & MQTT",
+    "personal": [
+      {
+        "title": "SmartEco-Column",
+        "detail": "Firmware-to-dashboard environmental sensor pipeline",
+        "url": "https://github.com/Ezumaex/smarteco-column"
+      }
+    ],
+    "experience": [],
+    "learning": []
+  },
+  {
+    "name": "VB.NET & SQL Server",
+    "personal": [],
+    "experience": [
+      {
+        "title": "Phelps Dodge Philippines",
+        "detail": "Inventory system maintenance, reporting, and troubleshooting"
+      }
+    ],
+    "learning": []
+  },
+  {
+    "name": "Networking",
+    "personal": [],
+    "experience": [
+      {
+        "title": "Colegio de Muntinlupa MIS",
+        "detail": "Network routing and basic troubleshooting support"
+      },
+      {
+        "title": "Phelps Dodge Philippines",
+        "detail": "Cabling, hardware setup, and daily IT support"
+      }
+    ],
+    "learning": []
+  },
+  {
+    "name": "Java",
+    "personal": [],
+    "experience": [],
+    "learning": [
+      {
+        "title": "Java (Basic)",
+        "detail": "HackerRank skills assessment · August 2026",
+        "url": "certifications.html"
+      },
+      {
+        "title": "Java Programming 1",
+        "detail": "CodeChum · February 2026",
+        "url": "certifications.html"
+      }
+    ]
+  },
+  {
+    "name": "C#",
+    "personal": [],
+    "experience": [],
+    "learning": [
+      {
+        "title": "Foundational C# with Microsoft",
+        "detail": "freeCodeCamp · August 2026",
+        "url": "certifications.html"
+      }
+    ]
+  }
+]

@@ -1,32 +1,200 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Business Card</title>
-    <link rel="stylesheet" href="styles.css" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Joerelle Jay P. Bisnar is a Computer Engineering student building practical software, web, networking, and IoT systems.">
+  <meta name="theme-color" content="#081b24">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ezumaex.github.io/">
+  <meta property="og:title" content="Joerelle Jay P. Bisnar | Software, systems & Computer Engineering">
+  <meta property="og:description" content="Practical software, web, networking, and IoT work from a Computer Engineering student in Metro Manila.">
+  <meta property="og:image" content="https://ezumaex.github.io/assets/images/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Joerelle Jay P. Bisnar | Software, systems & Computer Engineering">
+  <meta name="twitter:description" content="Practical software, web, networking, and IoT work from a Computer Engineering student in Metro Manila.">
+  <meta name="twitter:image" content="https://ezumaex.github.io/assets/images/og.png">
+  <title>Joerelle Jay P. Bisnar | Computer Engineering & Software</title>
+  <link rel="canonical" href="https://ezumaex.github.io/">
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css?v=20260830b">
 </head>
 <body>
-<div class="business-card">
-    <img
-            class="profile-image"
-            src="https://cdn.freecodecamp.org/curriculum/labs/flower.jpg"
-            alt="Profile photo of a flower"
-    />
-    <p class="full-name">Joerelle Jay</p>
-    <p class="designation">Student Assistant</p>
-    <p class="company">@Colegio de Muntinlupa</p>
-    <hr />
-    <p>Email: bisnar.joerellejay@gmail.com</p>
-    <p>(+63) 935-3311-324</p>
-    <a class="portfolio-link" href="https://ezumaex.github.io">Portfolio</a>
-    <hr />
-    <div class="social-media">
-        <h2>Connect with me</h2>
-        <a href="https://twitter.com">Twitter</a>
-        <a href="https://linkedin.com">LinkedIn</a>
-        <a href="https://github.com">GitHub</a>
-    </div>
-</div>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="wordmark" href="#top" aria-label="Joerelle Jay P. Bisnar, home">J<span>PB</span></a>
+    <button class="menu-button" id="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+      <span class="sr-only">Toggle navigation</span>
+      <span aria-hidden="true"></span><span aria-hidden="true"></span>
+    </button>
+    <nav id="site-nav" data-open="false" aria-label="Primary navigation">
+      <a href="#about">About</a>
+      <a href="#work">Work</a>
+      <a href="#experience">Experience</a>
+      <a href="#resume">Résumé</a>
+      <a href="certifications.html">Certifications</a>
+      <a class="nav-cta" href="#contact">Connect</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Computer Engineering · Metro Manila</p>
+        <h1 id="hero-title">I build practical systems across <em>software</em> and <em>hardware.</em></h1>
+        <p class="hero-lede">I’m Joerelle Jay P. Bisnar, a Computer Engineering student with hands-on experience in web interfaces, inventory systems, networking, and IT support.</p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#work">Explore selected work</a>
+          <a class="button button-secondary" href="assets/resume/joerelle-jay-bisnar-resume.pdf">View résumé</a>
+        </div>
+        <div class="hero-links" aria-label="Professional links">
+          <a href="https://github.com/Ezumaex" target="_blank" rel="noreferrer">GitHub ↗</a>
+          <a href="https://www.linkedin.com/in/joerelle-jay-bisnar-4b244a392/" target="_blank" rel="noreferrer">LinkedIn ↗</a>
+          <a href="#contact">Contact ↓</a>
+        </div>
+      </div>
+
+      <aside class="hero-panel" aria-label="Profile summary">
+        <p class="panel-label">Current focus</p>
+        <p class="panel-value">Full-stack systems · IoT · networking</p>
+        <div class="signal-grid">
+          <div><strong>2027</strong><span>Expected graduation</span></div>
+          <div><strong>2</strong><span>Technical roles</span></div>
+          <div><strong>9</strong><span>Verified certificates</span></div>
+        </div>
+        <div class="panel-footer">
+          <span>Colegio de Muntinlupa</span>
+          <span>BS Computer Engineering</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section about-grid" id="about" aria-labelledby="about-title">
+      <div class="section-heading section-heading-stacked">
+        <p class="eyebrow">About</p>
+        <h2 id="about-title">Engineering curiosity, grounded in useful work.</h2>
+      </div>
+      <div class="about-copy">
+        <p>I study Computer Engineering at Colegio de Muntinlupa and work across the boundary between software and physical systems. My experience includes improving a VB.NET and SQL Server inventory application, developing frontend interfaces for university systems, and assisting with network and hardware support.</p>
+        <p>I’m building toward software engineering and IT roles where clean implementation, practical troubleshooting, and an understanding of connected systems matter.</p>
+      </div>
+    </section>
+
+    <section class="section" id="skills" aria-labelledby="skills-title">
+      <div class="section-heading">
+        <p class="eyebrow">Capabilities</p>
+        <h2 id="skills-title">A practical technical foundation.</h2>
+      </div>
+      <div class="skills-grid">
+        <article><p class="skill-index">01</p><h3>Languages</h3><p>C#, VB.NET, JavaScript, Python, Java, SQL, HTML and CSS</p></article>
+        <article><p class="skill-index">02</p><h3>Web</h3><p>React, Node.js, Express, Tailwind CSS, Bootstrap and REST APIs</p></article>
+        <article><p class="skill-index">03</p><h3>Data & reporting</h3><p>SQL Server, PostgreSQL and Crystal Reports</p></article>
+        <article><p class="skill-index">04</p><h3>Systems & embedded</h3><p>Git/GitHub, ESP32, Arduino, MQTT, networking, cabling, hardware setup and troubleshooting</p></article>
+      </div>
+      <div class="skill-evidence" id="skill-evidence">
+        <div>
+          <p class="evidence-label">Explore the evidence</p>
+          <div class="skill-evidence-controls" id="skill-evidence-controls" role="group" aria-label="Choose a skill to inspect">
+            <p class="loading-state">Loading skill evidence…</p>
+          </div>
+        </div>
+        <article class="skill-evidence-panel" id="skill-evidence-panel" aria-live="polite">
+          <p class="loading-state">Select a skill to see where I have used it.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="work" aria-labelledby="work-title">
+      <div class="section-heading">
+        <p class="eyebrow">Selected work</p>
+        <h2 id="work-title">Systems with a real-world edge.</h2>
+      </div>
+      <div class="project-grid" id="project-grid" aria-live="polite">
+        <p class="loading-state">Loading selected work…</p>
+      </div>
+      <noscript>
+        <p class="data-error">JavaScript is disabled. View the selected work directly on <a href="https://github.com/Ezumaex">GitHub</a>.</p>
+      </noscript>
+    </section>
+
+    <section class="section" id="collaboration" aria-labelledby="collaboration-title" hidden>
+      <div class="section-heading">
+        <p class="eyebrow">Collaborative work</p>
+        <h2 id="collaboration-title">Contributions inside shared codebases.</h2>
+      </div>
+      <p class="section-intro">These projects are owned by other developers or organizations. Each card describes only my verified contribution; the linked repositories remain read-only.</p>
+      <div class="contribution-grid" id="contribution-grid"></div>
+    </section>
+
+    <section class="section" id="experience" aria-labelledby="experience-title">
+      <div class="section-heading">
+        <p class="eyebrow">Experience</p>
+        <h2 id="experience-title">Applied learning, in the field.</h2>
+      </div>
+      <div class="timeline">
+        <article class="timeline-item">
+          <div class="timeline-meta"><time datetime="2026-06">Jun - Jul 2026</time><span>Makati · On-site</span></div>
+          <div><p class="role-type">Internship</p><h3>Information Technology Intern</h3><p class="organization">Phelps Dodge Philippines Energy Products Corporation</p><ul><li>Maintained and improved a company inventory system using VB.NET, SQL Server, and Crystal Reports.</li><li>Supported application and database troubleshooting, laptop configuration, cabling, hardware setup, and daily IT requests.</li></ul></div>
+        </article>
+        <article class="timeline-item">
+          <div class="timeline-meta"><time datetime="2024-08">Aug 2024 - Jun 2026</time><span>Muntinlupa · Hybrid</span></div>
+          <div><p class="role-type">Management Information Systems</p><h3>Student Assistant</h3><p class="organization">Colegio de Muntinlupa</p><ul><li>Developed frontend web interfaces for university systems and contributed to student and employee workflows.</li><li>Assisted with network routing, basic troubleshooting, and departmental administrative support.</li></ul></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section education-grid" id="education" aria-labelledby="education-title">
+      <div>
+        <p class="eyebrow">Education</p>
+        <h2 id="education-title">BS Computer Engineering</h2>
+      </div>
+      <div class="education-card">
+        <p class="organization">Colegio de Muntinlupa</p>
+        <p>2023 - 2027 <span>(expected)</span></p>
+        <p>Dean’s Lister</p>
+      </div>
+    </section>
+
+    <section class="section resume-section" id="resume" aria-labelledby="resume-title">
+      <div class="resume-copy">
+        <p class="eyebrow">Résumé</p>
+        <h2 id="resume-title">Experience and skills, on one page.</h2>
+        <p>Review the latest public résumé in the browser or download the same PDF for your records.</p>
+        <div class="resume-actions">
+          <a class="button button-primary" href="assets/resume/joerelle-jay-bisnar-resume.pdf" target="_blank">View résumé</a>
+          <a class="button button-secondary" href="assets/resume/joerelle-jay-bisnar-resume.pdf" download>Download PDF</a>
+        </div>
+      </div>
+      <object class="resume-preview" data="assets/resume/joerelle-jay-bisnar-resume.pdf#view=FitH" type="application/pdf" aria-label="Preview of Joerelle Jay P. Bisnar's résumé">
+        <p>Your browser cannot display the preview. <a href="assets/resume/joerelle-jay-bisnar-resume.pdf">Open the résumé PDF</a>.</p>
+      </object>
+    </section>
+
+    <section class="section credential-callout" aria-labelledby="credential-title">
+      <div>
+        <p class="eyebrow">Continuous learning</p>
+        <h2 id="credential-title">Nine verified learning milestones.</h2>
+        <p>Browse certificates in programming, web development, and artificial intelligence with original images and verification links where available.</p>
+      </div>
+      <a class="button button-primary" href="certifications.html">Explore certifications</a>
+    </section>
+
+    <section class="section contact-section" id="contact" aria-labelledby="contact-title">
+      <p class="eyebrow">Contact</p>
+      <h2 id="contact-title">Let’s build something useful.</h2>
+      <p>I’m open to software engineering, web development, IT, networking, and Computer Engineering opportunities.</p>
+      <div class="contact-links">
+        <a class="button button-primary" href="https://www.linkedin.com/in/joerelle-jay-bisnar-4b244a392/" target="_blank" rel="noreferrer">LinkedIn</a>
+        <a class="button button-secondary" href="https://github.com/Ezumaex" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="button button-secondary" href="assets/resume/joerelle-jay-bisnar-resume.pdf" download>Download résumé</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>© 2026 Joerelle Jay P. Bisnar</p>
+    <p>Built for speed, accessibility, and GitHub Pages.</p>
+  </footer>
+  <script src="js/site.js?v=20260830b" defer></script>
 </body>
 </html>

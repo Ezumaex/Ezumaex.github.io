@@ -1,0 +1,51 @@
+[
+  {
+    "name": "Inventory System & IT Support",
+    "organization": "Phelps Dodge Philippines Energy Products Corporation",
+    "projectType": "Company internship · organization work",
+    "role": "Information Technology Intern",
+    "period": "Jun - Jul 2026",
+    "description": "Supported an existing inventory and reporting workflow while assisting with day-to-day IT operations.",
+    "contributions": [
+      "Maintained and improved an inventory application using VB.NET, SQL Server, and Crystal Reports.",
+      "Assisted with application and database troubleshooting, laptop configuration, cabling, and hardware setup."
+    ],
+    "technologies": ["VB.NET", "SQL Server", "Crystal Reports", "IT support", "Networking"],
+    "repository": "",
+    "liveDemo": "",
+    "evidenceUrl": ""
+  },
+  {
+    "name": "University Systems & MIS Support",
+    "organization": "Colegio de Muntinlupa",
+    "projectType": "Institutional work · contributor",
+    "role": "Student Assistant",
+    "period": "Aug 2024 - Jun 2026",
+    "description": "Contributed to the Management Information Systems office across frontend, networking, and administrative responsibilities.",
+    "contributions": [
+      "Developed frontend web interfaces for university systems and supported student and employee workflows.",
+      "Assisted with network routing, basic troubleshooting, and departmental administrative work."
+    ],
+    "technologies": ["Frontend web development", "Networking", "IT support"],
+    "repository": "",
+    "liveDemo": "",
+    "evidenceUrl": ""
+  },
+  {
+    "name": "Thermal Expansion Simulator",
+    "organization": "rohb22 · nine-person academic team",
+    "projectType": "Team project · contributor",
+    "role": "UI, simulation-integration, web presentation & export contributor",
+    "period": "Dec 2024",
+    "description": "A Godot-based educational simulator that visualizes how material dimensions change with temperature.",
+    "contributions": [
+      "Contributed the Godot interface and scene work, then refactored simulation and controller logic in GDScript.",
+      "Created the HTML/CSS presentation wrapper and configured web and Windows exports.",
+      "Authored and merged PR #1; 15 commits are attributable to the Ezumaex account on the current main history."
+    ],
+    "technologies": ["Godot 4.3", "GDScript", "HTML", "CSS", "Web export"],
+    "repository": "https://github.com/rohb22/thermal-expansion-simulator",
+    "liveDemo": "https://rohb22.github.io/thermal-expansion-simulator/",
+    "evidenceUrl": "https://github.com/rohb22/thermal-expansion-simulator/pull/1"
+  }
+]
