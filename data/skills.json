@@ -96,7 +96,7 @@
     "personal": [
       {
         "title": "SmartEco-Column",
-        "detail": "MQTT-to-dashboard software path verified by integration tests; firmware prepared for physical sensors",
+        "detail": "MQTT-to-REST/WebSocket path integration-tested; dashboard rendering manually verified",
         "url": "https://github.com/Ezumaex/smarteco-column"
       }
     ],
