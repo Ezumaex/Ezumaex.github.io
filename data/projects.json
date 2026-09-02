@@ -2,6 +2,7 @@
   {
     "name": "SmartEco-Column",
     "slug": "smarteco-column",
+    "subtitle": "Environmental monitoring through ESP32, MQTT, and a React dashboard",
     "description": "An ESP32 environmental monitoring prototype that streams air, soil, and water values through MQTT to a Node.js/WebSocket service and a React dashboard. Its MQTT-to-REST/WebSocket service is integration-tested, while CI also builds the dashboard.",
     "technologies": ["ESP32", "Arduino", "MQTT", "Node.js", "React", "WebSocket"],
     "repository": "https://github.com/Ezumaex/smarteco-column",
@@ -10,11 +11,20 @@
     "imageAlt": "SmartEco-Column dashboard with controlled air, soil, and water values in a connected local test state",
     "featured": true,
     "status": "Prototype",
-    "context": "Personal repository · team project"
+    "context": "Personal repository · team project",
+    "architecture": "ESP32 sensors → MQTT broker → Node.js service → WebSocket + REST → React dashboard",
+    "highlights": [
+      "Publishes separate air, soil, and water sensor payloads from ESP32 firmware every three seconds.",
+      "Bridges MQTT data to browser clients through a Node.js WebSocket service and a REST snapshot endpoint.",
+      "Filters malformed, unexpected, and out-of-range sensor values in the integration-tested backend.",
+      "Builds the React dashboard and runs backend integration coverage through continuous integration."
+    ],
+    "note": "Prototype status: physical sensor calibration and hardware testing are still required before field deployment."
   },
   {
     "name": "Developer Portfolio",
     "slug": "developer-portfolio",
+    "subtitle": "Accessible, data-driven GitHub Pages portfolio",
     "description": "A lightweight, accessible GitHub Pages portfolio with data-driven project and certificate collections, responsive layouts, and a maintainable résumé system.",
     "technologies": ["HTML", "CSS", "JavaScript", "JSON", "GitHub Pages"],
     "repository": "https://github.com/Ezumaex/Ezumaex.github.io",
@@ -23,6 +33,14 @@
     "imageAlt": "Joerelle Jay P. Bisnar portfolio social preview graphic",
     "featured": true,
     "status": "Active",
-    "context": "Personal repository · individual project"
+    "context": "Personal repository · individual project",
+    "architecture": "Semantic HTML → JSON content collections → vanilla JavaScript rendering → GitHub Pages",
+    "highlights": [
+      "Loads projects, certificates, collaborative work, and skill evidence from maintainable JSON files.",
+      "Uses semantic HTML, keyboard-operable controls, visible focus states, and reduced-motion support.",
+      "Integrates an in-page résumé preview with direct open and download fallbacks.",
+      "Publishes directly from the repository root with no framework or build step."
+    ],
+    "note": "Content claims and links are kept aligned with public repositories, certificates, and verified experience."
   }
 ]

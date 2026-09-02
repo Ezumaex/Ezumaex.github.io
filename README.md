@@ -1,8 +1,8 @@
 # Joerelle Jay P. Bisnar — Portfolio
 
-A lightweight, accessible portfolio for [Joerelle Jay P. Bisnar](https://github.com/Ezumaex), hosted at [ezumaex.github.io](https://ezumaex.github.io/). It presents selected projects, technical experience, education, verified certifications, and a public résumé.
+A lightweight, accessible portfolio for [Joerelle Jay P. Bisnar](https://github.com/Ezumaex), hosted at [ezumaex.github.io](https://ezumaex.github.io/). It presents selected projects, technical experience, education, verified certifications, and a public résumé in an editorial résumé-and-developer-dashboard layout.
 
-The site uses plain HTML, CSS, JavaScript, and JSON. There is no framework, package installation, or build step.
+The site uses plain HTML, CSS, JavaScript, and JSON. There is no framework, package installation, or build step. Its dark technical hero, warm résumé canvas, active navigation, reduced-motion support, expandable project evidence, and searchable certificate cards use browser-native features.
 
 ## Repository map
 
@@ -13,8 +13,8 @@ The site uses plain HTML, CSS, JavaScript, and JSON. There is no framework, pack
 ├── 404.html                            # GitHub Pages not-found page
 ├── styles.css                          # Shared visual system and responsive styles
 ├── js/
-│   ├── site.js                         # Navigation and project rendering
-│   └── certificates.js                 # Search, filters, and certificate dialog
+│   ├── site.js                         # Navigation, interactions, and home-page data rendering
+│   └── certificates.js                 # Full-library search, filters, and certificate dialog
 ├── data/
 │   ├── projects.json                   # Project content
 │   ├── certificates.json               # Certificate content
@@ -44,6 +44,7 @@ Edit `data/projects.json`. Each item follows this shape:
 ```json
 {
   "name": "Project name",
+  "subtitle": "Short project positioning line",
   "status": "Active",
   "context": "IoT system",
   "description": "A concise, evidence-based explanation of the project.",
@@ -52,7 +53,10 @@ Edit `data/projects.json`. Each item follows this shape:
   "liveDemo": "",
   "image": "assets/images/project-preview.png",
   "imageAlt": "Concise description of the project screenshot",
-  "featured": true
+  "featured": true,
+  "architecture": "Client → service → database",
+  "highlights": ["Specific implementation detail supported by the repository"],
+  "note": "An honest limitation, status note, or maintenance detail"
 }
 ```
 
@@ -60,6 +64,7 @@ Edit `data/projects.json`. Each item follows this shape:
 - Leave `liveDemo` as an empty string when no public demo exists.
 - Use an empty `image` string when there is no genuine project screenshot yet.
 - Use only technologies and outcomes that are supported by the repository.
+- Keep `highlights`, `architecture`, and `note` evidence-based; these fields power the expandable project details.
 - Keep JSON valid: double-quote strings and separate items with commas.
 
 ## Add a certificate
@@ -87,7 +92,7 @@ Edit `data/projects.json`. Each item follows this shape:
 }
 ```
 
-Use `YYYY-MM-DD` for `issued` so newest certificates sort first. If there is no public credential page or credential ID, use an empty string rather than inventing one. The `category` value automatically appears in the filter menu.
+Use `YYYY-MM-DD` for `issued` so newest certificates sort first. If there is no public credential page or credential ID, use an empty string rather than inventing one. The same record automatically appears in the searchable home-page grid and the full certificate library; `category` powers the full-library filter.
 
 ## Add verified collaborative work
 
@@ -149,11 +154,12 @@ Before publishing:
 
 1. Run the local server and open both `/` and `/certifications.html`.
 2. Check the layout at desktop and mobile widths.
-3. Search and filter the certificate library, then open and close a certificate preview.
-4. Open every project, credential, social, résumé, and navigation link.
-5. Confirm `data/projects.json`, `data/certificates.json`, `data/skills.json`, and `data/contributions.json` parse as valid JSON.
-6. Check keyboard navigation, visible focus states, image alt text, and reduced-motion behavior.
-7. Confirm the browser console has no errors.
+3. Search and expand certificates on the home page, then search, filter, open, and close a preview in the full library.
+4. Expand each project implementation panel.
+5. Open every project, credential, social, résumé, and navigation link.
+6. Confirm `data/projects.json`, `data/certificates.json`, `data/skills.json`, and `data/contributions.json` parse as valid JSON.
+7. Check keyboard navigation, visible focus states, image alt text, and reduced-motion behavior.
+8. Confirm the browser console has no errors.
 
 ## Deploy with GitHub Pages
 

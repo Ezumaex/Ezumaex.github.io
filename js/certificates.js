@@ -93,7 +93,7 @@ function applyFilters() {
 
 async function loadCertificates() {
   try {
-    const response = await fetch("data/certificates.json");
+    const response = await fetch("data/certificates.json", { cache: "no-cache" });
     if (!response.ok) throw new Error("Certificate data could not be loaded.");
     certificates = (await response.json()).sort((a, b) => b.issued.localeCompare(a.issued));
     const categories = [...new Set(certificates.map((certificate) => certificate.category))].sort();
