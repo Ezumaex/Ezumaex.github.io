@@ -1,5 +1,3 @@
-document.documentElement.classList.add("motion-ready");
-
 const projectGrid = document.querySelector("#project-grid");
 const menuButton = document.querySelector("#menu-button");
 const siteNav = document.querySelector("#site-nav");
@@ -10,8 +8,6 @@ const contributionGrid = document.querySelector("#contribution-grid");
 const scrollProgress = document.querySelector("#scroll-progress");
 const greeting = document.querySelector("#hero-greeting");
 const manilaTime = document.querySelector("#manila-time");
-const rotatingRole = document.querySelector("#rotating-role");
-const heroVisual = document.querySelector(".hero-visual");
 const homeCertificateGrid = document.querySelector("#home-certificate-grid");
 const homeCertificateSearch = document.querySelector("#home-certificate-search");
 const homeCertificateCount = document.querySelector("#home-certificate-count");
@@ -19,6 +15,7 @@ const certificateTotal = document.querySelector("#certificate-total");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 if (menuButton && siteNav) {
+  document.documentElement.classList.add("navigation-ready");
   menuButton.addEventListener("click", () => {
     const expanded = menuButton.getAttribute("aria-expanded") === "true";
     menuButton.setAttribute("aria-expanded", String(!expanded));
@@ -66,8 +63,7 @@ function professionalTimeParts() {
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit",
-    second: "2-digit"
+    minute: "2-digit"
   }).format(new Date());
 
   return { salutation, clock };
@@ -81,42 +77,7 @@ function updateManilaTime() {
 
 if (greeting || manilaTime) {
   updateManilaTime();
-  window.setInterval(updateManilaTime, 1000);
-}
-
-if (rotatingRole && !reducedMotion.matches) {
-  const roles = ["Computer Engineering Student", "Web Developer", "Full-Stack Builder", "IoT Prototyper"];
-  let roleIndex = 0;
-  let characterIndex = roles[0].length;
-  let deleting = true;
-
-  const typeRole = () => {
-    const current = roles[roleIndex];
-    rotatingRole.textContent = current.slice(0, characterIndex);
-
-    if (deleting) {
-      characterIndex -= 1;
-      if (characterIndex <= 0) {
-        deleting = false;
-        roleIndex = (roleIndex + 1) % roles.length;
-        window.setTimeout(typeRole, 280);
-        return;
-      }
-      window.setTimeout(typeRole, 38);
-      return;
-    }
-
-    characterIndex += 1;
-    if (characterIndex > roles[roleIndex].length) {
-      deleting = true;
-      characterIndex = roles[roleIndex].length;
-      window.setTimeout(typeRole, 1800);
-      return;
-    }
-    window.setTimeout(typeRole, 72);
-  };
-
-  window.setTimeout(typeRole, 2100);
+  window.setInterval(() => { if (!document.hidden) updateManilaTime(); }, 60000);
 }
 
 function updateScrollProgress() {
@@ -140,7 +101,7 @@ if (reducedMotion.matches || !("IntersectionObserver" in window)) {
       entry.target.classList.add("is-visible");
       observer.unobserve(entry.target);
     });
-  }, { threshold: 0.12, rootMargin: "0px 0px -7%" });
+  }, { threshold: 0, rootMargin: "0px 0px -24px" });
   revealItems.forEach((item) => revealObserver.observe(item));
 }
 
@@ -161,21 +122,9 @@ if (siteNav && "IntersectionObserver" in window) {
   });
 }
 
-if (heroVisual && !reducedMotion.matches) {
-  const hero = heroVisual.closest(".hero");
-  hero.addEventListener("pointermove", (event) => {
-    const bounds = hero.getBoundingClientRect();
-    const x = ((event.clientX - bounds.left) / bounds.width - .5) * 12;
-    const y = ((event.clientY - bounds.top) / bounds.height - .5) * 10;
-    heroVisual.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-  });
-  hero.addEventListener("pointerleave", () => {
-    heroVisual.style.transform = "translate3d(0, 0, 0)";
-  });
-}
-
 function projectCard(project, index) {
   const article = element("article", "project-card");
+  article.id = `project-${project.slug || index}`;
   const shell = element("div", "project-shell");
   const topline = element("div", "project-topline");
   topline.append(
@@ -265,8 +214,9 @@ async function loadProjects() {
     if (!response.ok) throw new Error("Project data could not be loaded.");
     const projects = await response.json();
     projectGrid.replaceChildren(...projects.filter((project) => project.featured).map(projectCard));
+    document.dispatchEvent(new CustomEvent("portfolio:projects", { detail: projects.filter(project => project.featured) }));
   } catch (error) {
-    projectGrid.replaceChildren(element("p", "data-error", "Project details are temporarily unavailable. Visit GitHub to see the repositories."));
+    projectGrid.prepend(element("p", "data-error", "Showing the saved project list; interactive details are temporarily unavailable."));
   }
 }
 
@@ -292,7 +242,7 @@ function evidenceGroup(title, items) {
   return group;
 }
 
-function renderSkillEvidence(skill) {
+function renderSkillEvidence(skill, userInitiated = false) {
   const heading = element("h3", "", skill.name);
   const groups = element("div", "evidence-groups");
   [
@@ -301,6 +251,7 @@ function renderSkillEvidence(skill) {
     evidenceGroup("Learning evidence", skill.learning || [])
   ].filter(Boolean).forEach((group) => groups.append(group));
   skillPanel.replaceChildren(heading, groups);
+  if (userInitiated) document.dispatchEvent(new CustomEvent("portfolio:skill", { detail: skill }));
   skillControls.querySelectorAll("button").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.skill === skill.name));
   });
@@ -317,10 +268,11 @@ async function loadSkillEvidence() {
       button.type = "button";
       button.dataset.skill = skill.name;
       button.setAttribute("aria-pressed", "false");
-      button.addEventListener("click", () => renderSkillEvidence(skill));
+      button.addEventListener("click", () => renderSkillEvidence(skill, true));
       return button;
     });
     skillControls.replaceChildren(...buttons);
+    document.dispatchEvent(new CustomEvent("portfolio:skills", { detail: skills }));
     if (skills.length) renderSkillEvidence(skills[0]);
   } catch (error) {
     skillControls.replaceChildren(element("p", "data-error", "Skill evidence is temporarily unavailable."));
@@ -376,11 +328,12 @@ async function loadContributions() {
     contributionGrid.replaceChildren(...contributions.map(contributionCard));
     contributionSection.hidden = false;
   } catch (error) {
-    contributionSection.hidden = true;
+    contributionSection.hidden = false;
   }
 }
 
 let homeCertificates = [];
+let homeCertificatesLoaded = false;
 
 function issuerMonogram(issuer) {
   const words = issuer.replace(/[^a-zA-Z0-9 ]/g, " ").split(/\s+/).filter(Boolean);
@@ -430,7 +383,7 @@ function homeCertificateCard(certificate) {
 }
 
 function filterHomeCertificates() {
-  if (!homeCertificateGrid) return;
+  if (!homeCertificateGrid || !homeCertificatesLoaded) return;
   const query = homeCertificateSearch?.value.trim().toLowerCase() || "";
   const filtered = homeCertificates.filter((certificate) => {
     const haystack = [certificate.title, certificate.issuer, certificate.category, ...certificate.skills].join(" ").toLowerCase();
@@ -447,11 +400,12 @@ async function loadHomeCertificates() {
     const response = await fetch("data/certificates.json", { cache: "no-cache" });
     if (!response.ok) throw new Error("Certificate data could not be loaded.");
     homeCertificates = (await response.json()).sort((a, b) => b.issued.localeCompare(a.issued));
+    homeCertificatesLoaded = true;
     if (certificateTotal) certificateTotal.textContent = String(homeCertificates.length);
     filterHomeCertificates();
   } catch (error) {
     if (homeCertificateCount) homeCertificateCount.textContent = "Unable to load certificates";
-    homeCertificateGrid.replaceChildren(element("p", "data-error", "Certificate details are temporarily unavailable."));
+    homeCertificateGrid.prepend(element("p", "data-error", "Showing the saved certificate links; search is temporarily unavailable."));
   }
 }
 

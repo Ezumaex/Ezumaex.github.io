@@ -20,7 +20,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260902">
+  <script src="js/motion-preference.js?v=20260903a"></script>
+  <link rel="stylesheet" href="styles.css?v=20260903">
+  <link rel="stylesheet" href="motion.css?v=20260903">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -62,11 +64,14 @@
         </div>
       </div>
 
-      <div class="hero-visual" aria-hidden="true">
-        <div class="network-orb">
+      <div class="hero-visual" id="hero-scene">
+        <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+        <div class="network-orb" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
           <i></i><i></i><i></i>
         </div>
+        <p class="hero-visual-label" aria-hidden="true">CONNECTED SYSTEMS <span>Software · networks · hardware</span></p>
+        <button class="hero-inspect" type="button" hidden>Rotate wireframe <span aria-hidden="true">↻</span></button>
       </div>
       <a class="scroll-cue" href="#about" aria-label="Scroll to professional summary">Scroll <span>↓</span></a>
     </section>
@@ -170,19 +175,50 @@
           <h2 id="work-title">Projects</h2>
           <p class="section-note">Evidence-backed work from my repositories. Expand a card for implementation details.</p>
         </div>
+        <div class="project-showcase" id="project-showcase" role="region" aria-label="Interactive project preview" hidden>
+          <div class="showcase-toolbar">
+            <p class="eyebrow">Explore the work</p>
+            <label for="showcase-skill">Evidence for</label>
+            <select id="showcase-skill"><option value="">All featured projects</option></select>
+          </div>
+          <div class="showcase-stage" id="project-scene">
+            <img id="showcase-fallback" class="showcase-fallback" alt="" loading="lazy" width="960" height="600">
+            <canvas id="project-canvas" aria-hidden="true"></canvas>
+            <p class="showcase-hint" id="showcase-hint">Use the project buttons below to explore.</p>
+          </div>
+          <div class="showcase-caption" aria-live="polite" aria-atomic="true">
+            <p class="project-label" id="showcase-counter"></p>
+            <h3 id="showcase-title"></h3>
+            <p id="showcase-architecture"></p>
+            <a class="text-link" id="showcase-details" href="#project-grid">Read implementation details ↓</a>
+          </div>
+          <div class="showcase-controls">
+            <button type="button" id="showcase-prev" aria-label="Previous project">←</button>
+            <div id="showcase-projects" role="group" aria-label="Select a project"></div>
+            <button type="button" id="showcase-next" aria-label="Next project">→</button>
+          </div>
+          <p id="showcase-empty" class="showcase-empty" hidden>No featured project matches this skill yet. See the learning and professional evidence in the Skills section.</p>
+        </div>
         <div class="project-grid" id="project-grid" aria-live="polite">
-          <p class="loading-state">Loading selected work…</p>
+          <!-- fallback:projects:start -->
+<article class="project-card"><div class="project-shell"><h3>SmartEco-Column</h3><p>An ESP32 environmental monitoring prototype that streams air, soil, and water values through MQTT to a Node.js/WebSocket service and a React dashboard. Its MQTT-to-REST/WebSocket service is integration-tested, while CI also builds the dashboard.</p><p><a href="https://github.com/Ezumaex/smarteco-column">Repository</a></p></div></article>
+<article class="project-card"><div class="project-shell"><h3>Developer Portfolio</h3><p>A lightweight, accessible GitHub Pages portfolio with data-driven project and certificate collections, responsive layouts, and a maintainable résumé system.</p><p><a href="https://github.com/Ezumaex/Ezumaex.github.io">Repository</a> · <a href="https://ezumaex.github.io/">Live site</a></p></div></article>
+          <!-- fallback:projects:end -->
         </div>
         <noscript><p class="data-error">JavaScript is disabled. View the selected work directly on <a href="https://github.com/Ezumaex">GitHub</a>.</p></noscript>
       </section>
 
-      <section class="section reveal" id="collaboration" aria-labelledby="collaboration-title" hidden>
+      <section class="section reveal" id="collaboration" aria-labelledby="collaboration-title">
         <div class="section-heading section-heading-wide">
           <p class="eyebrow">Teamwork</p>
           <h2 id="collaboration-title">Collaborative Work</h2>
           <p class="section-note">Team-owned work is clearly separated from personal projects. Each card describes only my verified contribution.</p>
         </div>
-        <div class="contribution-grid" id="contribution-grid"></div>
+        <div class="contribution-grid" id="contribution-grid">
+          <!-- fallback:contributions:start -->
+<article class="contribution-card"><h3>Thermal Expansion Simulator</h3><p>rohb22 · nine-person academic team · UI, simulation-integration, web presentation &amp; export contributor</p><p>A Godot-based educational simulator that visualizes how material dimensions change with temperature.</p><a href="https://github.com/rohb22/thermal-expansion-simulator">Repository</a> · <a href="https://github.com/rohb22/thermal-expansion-simulator/pull/1">Contribution evidence</a></article>
+          <!-- fallback:contributions:end -->
+        </div>
       </section>
 
       <section class="section reveal" id="certifications" aria-labelledby="certifications-title">
@@ -197,7 +233,17 @@
           <p id="home-certificate-count" aria-live="polite">Loading certificates…</p>
         </div>
         <div class="home-certificate-grid" id="home-certificate-grid" aria-live="polite">
-          <p class="loading-state">Loading certificates…</p>
+          <!-- fallback:certificates:start -->
+<ul class="fallback-list"><li><a href="assets/certificates/java-basic-hackerrank.png">Java (Basic)</a> — HackerRank · August 2026 · <a href="https://www.hackerrank.com/certificates/73be3e943a9a">Verify</a></li>
+<li><a href="assets/certificates/foundational-csharp-microsoft.png">Foundational C# with Microsoft</a> — freeCodeCamp · August 2026 · <a href="https://freecodecamp.org/certification/ezumaex/foundational-c-sharp-with-microsoft">Verify</a></li>
+<li><a href="assets/certificates/react-essential-training.png">React Essential Training</a> — LinkedIn Learning · March 2026 · <a href="https://www.linkedin.com/learning/certificates/54747ca6a09796233add3a25dc220b6f98f5a14e0c026a8cd554e0cbca0fc31c/?trk=share_certificate">Verify</a></li>
+<li><a href="assets/certificates/java-programming-1.png">Java Programming 1</a> — CodeChum · February 2026 · <a href="https://app.codechum.com/certificates/22083">Verify</a></li>
+<li><a href="assets/certificates/java-essential-training.png">Java Essential Training: Syntax and Structure</a> — LinkedIn Learning · February 2026 · <a href="https://www.linkedin.com/learning/certificates/e0ce95e20598599418d4bcf2c055b849e8a57dd2477659e00a142eff421a9f2c/?trk=share_certificate">Verify</a></li>
+<li><a href="assets/certificates/hcia-ai-v3-5.png">HCIA-AI V3.5 Course</a> — Huawei Talent Online · May 2025</li>
+<li><a href="assets/certificates/full-stack-web-development-bootcamp.png">The Complete Full-Stack Web Development Bootcamp</a> — Udemy · March 2025 · <a href="https://www.udemy.com/certificate/UC-dec7ac6d-91e4-4ba8-ad52-c22f9bf58e6c/">Verify</a></li>
+<li><a href="assets/certificates/python-pro-bootcamp.png">100 Days of Code: The Complete Python Pro Bootcamp</a> — Udemy · March 2025 · <a href="https://www.udemy.com/certificate/UC-3bf8476e-270f-4334-862a-b00fc554ec03/">Verify</a></li>
+<li><a href="assets/certificates/python-programming-basics.png">Python Programming Basics</a> — Huawei Talent Online · February 2025</li></ul>
+          <!-- fallback:certificates:end -->
         </div>
         <p class="section-action"><a class="text-link" href="certifications.html">Open the full certificate library ↗</a></p>
       </section>
@@ -237,7 +283,11 @@
   <footer class="site-footer">
     <p>Joerelle Jay P. Bisnar · Metro Manila, Philippines</p>
     <p>Built for accessibility, maintainability, and GitHub Pages · 2026</p>
+    <button class="motion-toggle" type="button" aria-pressed="false" hidden>Reduce motion</button>
   </footer>
-  <script src="js/site.js?v=20260902" defer></script>
+  <script src="js/showcase.js?v=20260903" defer></script>
+  <script src="js/site.js?v=20260903" defer></script>
+  <script src="js/motion.js?v=20260903a" defer></script>
+  <script type="module" src="js/three-scenes.js?v=20260903"></script>
 </body>
 </html>

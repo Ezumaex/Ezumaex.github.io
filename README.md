@@ -2,7 +2,7 @@
 
 A lightweight, accessible portfolio for [Joerelle Jay P. Bisnar](https://github.com/Ezumaex), hosted at [ezumaex.github.io](https://ezumaex.github.io/). It presents selected projects, technical experience, education, verified certifications, and a public résumé in an editorial résumé-and-developer-dashboard layout.
 
-The site uses plain HTML, CSS, JavaScript, and JSON. There is no framework, package installation, or build step. Its dark technical hero, warm résumé canvas, active navigation, reduced-motion support, expandable project evidence, and searchable certificate cards use browser-native features.
+The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three.js for progressive 3D enhancement. There is no framework, package installation, or build step. The résumé, project links, and certificate originals remain readable without WebGL or JavaScript.
 
 ## Repository map
 
@@ -14,7 +14,14 @@ The site uses plain HTML, CSS, JavaScript, and JSON. There is no framework, pack
 ├── styles.css                          # Shared visual system and responsive styles
 ├── js/
 │   ├── site.js                         # Navigation, interactions, and home-page data rendering
-│   └── certificates.js                 # Full-library search, filters, and certificate dialog
+│   ├── certificates.js                 # Full-library search, filters, and certificate dialog
+│   ├── motion-preference.js            # OS preference and optional local motion setting
+│   ├── motion.js                       # Native DOM transitions and motion control
+│   ├── showcase.js                     # Accessible project selector, independent of WebGL
+│   ├── three-scenes.js                 # Lazy, render-on-demand hero and project scenes
+│   └── vendor/three-r185/              # Pinned Three.js 0.185.1 modules and MIT license
+├── motion.css                         # Progressive motion and responsive 3D layout
+├── scripts/                           # Optional validation and static fallback maintenance
 ├── data/
 │   ├── projects.json                   # Project content
 │   ├── certificates.json               # Certificate content
@@ -52,6 +59,7 @@ Edit `data/projects.json`. Each item follows this shape:
   "repository": "https://github.com/Ezumaex/repository-name",
   "liveDemo": "",
   "image": "assets/images/project-preview.png",
+  "previewImage": "assets/images/project-preview.webp",
   "imageAlt": "Concise description of the project screenshot",
   "featured": true,
   "architecture": "Client → service → database",
@@ -63,6 +71,7 @@ Edit `data/projects.json`. Each item follows this shape:
 - Set `featured` to `true` to show the project on the home page.
 - Leave `liveDemo` as an empty string when no public demo exists.
 - Use an empty `image` string when there is no genuine project screenshot yet.
+- Optional `previewImage` is the small image used for 3D. Prefer WebP, at most 960 pixels wide. Without it, the gallery uses `image`. Keep the normal image and its description truthful; the portfolio's existing cover artwork is not presented as an application screenshot.
 - Use only technologies and outcomes that are supported by the repository.
 - Keep `highlights`, `architecture`, and `note` evidence-based; these fields power the expandable project details.
 - Keep JSON valid: double-quote strings and separate items with commas.
@@ -162,6 +171,38 @@ Before publishing:
 8. Confirm the browser console has no errors.
 
 ## Deploy with GitHub Pages
+
+### Motion and 3D maintenance
+
+- The hero is a restrained layered wireframe. Pointer movement, scrolling, and the **Rotate wireframe** button change its orientation.
+- The project showcase uses the same featured projects in `data/projects.json`. Selection, arrow buttons, keyboard arrows/Home/End, and optional horizontal swipes work without Three.js.
+- Skill filtering matches the verified repository URLs in `data/skills.json`. Java currently has learning evidence, not a featured project; the gallery says so.
+- The footer's **Reduce motion** preference is stored on the visitor's device. An operating-system reduced-motion preference always takes precedence. Certificates use lightweight native transitions, not WebGL.
+- Three.js is imported only when a scene approaches the viewport. Both scenes render on demand and stop when settled, offscreen, or hidden. Mobile uses one preview texture and a lower pixel ratio; sustained slow rendering lowers resolution further or falls back to a static image.
+- No shadows, postprocessing, animation framework, trackers, or new external runtime requests were added. The pinned modules are served from this repository.
+- After updating JSON content, run `node scripts/sync-fallbacks.mjs` to refresh the saved HTML lists for visitors without JavaScript. Normal JSON-powered content updates immediately; this optional maintenance step keeps the no-script copy current too.
+
+### Local checks
+
+```text
+node scripts/sync-fallbacks.mjs
+node scripts/validate.mjs
+node scripts/test-motion.mjs
+python scripts/serve.py
+```
+
+The optional preview server disables caching and provides fault-injection routes:
+
+- `/__qa__/no-js/`: no scripts; saved project, collaboration, and certificate links remain available.
+- `/__qa__/no-three/?motionTest=full`: simulate an unavailable Three.js download.
+- `/__qa__/no-webgl/?motionTest=full`: simulate unsupported WebGL.
+- `/__qa__/data-failure/`: simulate failed JSON requests, including certificate search after failure.
+
+Only on `127.0.0.1`, `?motionDebug=1&motionTest=full` shows scene counters and forces full-motion QA without changing the OS setting. `?motionTest=reduced` exercises reduced motion. These overrides are ignored on the public domain. Diagnostics report active frame timing, frame count, draw calls, GPU-resource counts, estimated texture memory, and JS heap when supported—not measured GPU utilization.
+
+See [the animation validation report](docs/animation-validation.md) for the tested scope and limitations.
+
+### Publishing
 
 This is the user-site repository `Ezumaex/Ezumaex.github.io`. GitHub Pages can publish it directly from the repository root without a build process.
 

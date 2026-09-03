@@ -1,0 +1,2 @@
+# Preserve upstream module bytes and reproducible vendor checksums on Windows.
+js/vendor/three-r185/*.js -text

@@ -20,7 +20,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260902">
+  <script src="js/motion-preference.js?v=20260903a"></script>
+  <link rel="stylesheet" href="styles.css?v=20260903">
+  <link rel="stylesheet" href="motion.css?v=20260903">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -63,7 +65,17 @@
       </div>
 
       <div class="certificate-grid" id="certificate-grid" aria-live="polite">
-        <p class="loading-state">Loading certificates…</p>
+        <!-- fallback:certificates:start -->
+<ul class="fallback-list"><li><a href="assets/certificates/java-basic-hackerrank.png">Java (Basic)</a> — HackerRank · August 2026 · <a href="https://www.hackerrank.com/certificates/73be3e943a9a">Verify</a></li>
+<li><a href="assets/certificates/foundational-csharp-microsoft.png">Foundational C# with Microsoft</a> — freeCodeCamp · August 2026 · <a href="https://freecodecamp.org/certification/ezumaex/foundational-c-sharp-with-microsoft">Verify</a></li>
+<li><a href="assets/certificates/react-essential-training.png">React Essential Training</a> — LinkedIn Learning · March 2026 · <a href="https://www.linkedin.com/learning/certificates/54747ca6a09796233add3a25dc220b6f98f5a14e0c026a8cd554e0cbca0fc31c/?trk=share_certificate">Verify</a></li>
+<li><a href="assets/certificates/java-programming-1.png">Java Programming 1</a> — CodeChum · February 2026 · <a href="https://app.codechum.com/certificates/22083">Verify</a></li>
+<li><a href="assets/certificates/java-essential-training.png">Java Essential Training: Syntax and Structure</a> — LinkedIn Learning · February 2026 · <a href="https://www.linkedin.com/learning/certificates/e0ce95e20598599418d4bcf2c055b849e8a57dd2477659e00a142eff421a9f2c/?trk=share_certificate">Verify</a></li>
+<li><a href="assets/certificates/hcia-ai-v3-5.png">HCIA-AI V3.5 Course</a> — Huawei Talent Online · May 2025</li>
+<li><a href="assets/certificates/full-stack-web-development-bootcamp.png">The Complete Full-Stack Web Development Bootcamp</a> — Udemy · March 2025 · <a href="https://www.udemy.com/certificate/UC-dec7ac6d-91e4-4ba8-ad52-c22f9bf58e6c/">Verify</a></li>
+<li><a href="assets/certificates/python-pro-bootcamp.png">100 Days of Code: The Complete Python Pro Bootcamp</a> — Udemy · March 2025 · <a href="https://www.udemy.com/certificate/UC-3bf8476e-270f-4334-862a-b00fc554ec03/">Verify</a></li>
+<li><a href="assets/certificates/python-programming-basics.png">Python Programming Basics</a> — Huawei Talent Online · February 2025</li></ul>
+          <!-- fallback:certificates:end -->
       </div>
       <noscript>
         <p class="data-error">JavaScript is required for certificate search and previews. The credential list is also available on <a href="https://www.linkedin.com/in/joerelle-jay-bisnar-4b244a392/" target="_blank" rel="noreferrer">LinkedIn</a>.</p>
@@ -93,8 +105,10 @@
   <footer class="site-footer">
     <p>© 2026 Joerelle Jay P. Bisnar</p>
     <p><a href="index.html">Return to portfolio</a></p>
+    <button class="motion-toggle" type="button" aria-pressed="false" hidden>Reduce motion</button>
   </footer>
-  <script src="js/site.js?v=20260902" defer></script>
-  <script src="js/certificates.js?v=20260902" defer></script>
+  <script src="js/site.js?v=20260903" defer></script>
+  <script src="js/certificates.js?v=20260903" defer></script>
+  <script src="js/motion.js?v=20260903a" defer></script>
 </body>
 </html>

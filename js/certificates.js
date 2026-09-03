@@ -13,6 +13,7 @@ const dialogVerify = document.querySelector("#dialog-verify");
 const dialogClose = document.querySelector("#dialog-close");
 
 let certificates = [];
+let certificatesLoaded = false;
 
 function element(tag, className, text) {
   const node = document.createElement(tag);
@@ -63,6 +64,11 @@ function certificateCard(certificate) {
   view.type = "button";
   view.addEventListener("click", () => openCertificate(certificate));
   actions.append(view);
+  const original = element("a", "card-link", "Original ↗");
+  original.href = certificate.pdf || certificate.image;
+  original.target = "_blank";
+  original.rel = "noreferrer";
+  actions.append(original);
   if (certificate.credentialUrl) {
     const verify = element("a", "card-link muted-link", "Verify ↗");
     verify.href = certificate.credentialUrl;
@@ -76,6 +82,7 @@ function certificateCard(certificate) {
 }
 
 function applyFilters() {
+  if (!certificatesLoaded) return;
   const tokenize = (value) => value.toLowerCase().match(/[a-z0-9#+.]+/g) || [];
   const queryTokens = tokenize(searchInput.value.trim());
   const category = categorySelect.value;
@@ -96,6 +103,7 @@ async function loadCertificates() {
     const response = await fetch("data/certificates.json", { cache: "no-cache" });
     if (!response.ok) throw new Error("Certificate data could not be loaded.");
     certificates = (await response.json()).sort((a, b) => b.issued.localeCompare(a.issued));
+    certificatesLoaded = true;
     const categories = [...new Set(certificates.map((certificate) => certificate.category))].sort();
     categories.forEach((category) => {
       const option = element("option", "", category);
@@ -105,7 +113,7 @@ async function loadCertificates() {
     applyFilters();
   } catch (error) {
     count.textContent = "Unable to load certificates";
-    grid.replaceChildren(element("p", "data-error", "Certificate details are temporarily unavailable."));
+    grid.prepend(element("p", "data-error", "Showing the saved certificate links; search is temporarily unavailable."));
   }
 }
 
