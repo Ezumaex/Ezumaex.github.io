@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 112 112" fill="none">
+  <!-- Neutral user-interface avatar, not a depiction of the portfolio owner. -->
+  <circle cx="56" cy="56" r="56" fill="#0c2d25"/>
+  <g stroke="#a4cdbb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="56" cy="40" r="15"/>
+    <path d="M28 87v-7a20 20 0 0 1 20-20h16a20 20 0 0 1 20 20v7"/>
+  </g>
+</svg>

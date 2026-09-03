@@ -22,7 +22,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="js/motion-preference.js?v=20260903a"></script>
   <link rel="stylesheet" href="styles.css?v=20260903b">
-  <link rel="stylesheet" href="motion.css?v=20260903b">
+  <link rel="stylesheet" href="motion.css?v=20260904a">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -48,10 +48,27 @@
   <main id="main">
     <section class="hero" id="top" aria-labelledby="hero-title">
       <div class="hero-copy">
-        <p class="hero-greeting" id="hero-greeting">Welcome to my portfolio</p>
-        <p class="availability"><span class="status-dot" aria-hidden="true"></span> Open to opportunities</p>
+        <div class="hero-intro">
+          <figure class="profile-photo">
+            <img src="assets/images/profile-placeholder.svg" alt="Portrait placeholder — personal photo to be added" width="112" height="112">
+            <figcaption>Photo coming soon</figcaption>
+          </figure>
+          <div>
+            <p class="hero-greeting" id="hero-greeting">Welcome to my portfolio</p>
+            <p class="availability"><span class="status-dot" aria-hidden="true"></span> Open to opportunities</p>
+          </div>
+        </div>
         <h1 id="hero-title">Joerelle Jay P. Bisnar</h1>
-        <p class="hero-role"><span id="rotating-role">Computer Engineering Student</span></p>
+        <div class="hero-role-row">
+          <p class="hero-role">
+            <span class="sr-only">Computer Engineering Student, Web Developer, Full-Stack Builder, and IoT Prototyper.</span>
+            <span class="hero-role-text" aria-hidden="true">
+              <span class="role-sizer">Computer Engineering Student</span>
+              <span id="rotating-role">Computer Engineering Student</span>
+            </span>
+          </p>
+          <button class="role-toggle" id="role-toggle" type="button" aria-label="Pause rotating titles" aria-controls="rotating-role" hidden>Pause</button>
+        </div>
         <p class="hero-disciplines">Software <span>·</span> Web <span>·</span> Networking <span>·</span> IoT</p>
         <p class="hero-location">⌖ Metro Manila, Philippines</p>
         <p class="hero-lede">I build practical applications that connect software, data, and hardware — from web interfaces and backend services to embedded IoT systems.</p>
@@ -313,6 +330,7 @@
     <button class="motion-toggle" type="button" aria-pressed="false" hidden>Reduce motion</button>
   </footer>
   <script src="js/motion.js?v=20260903b" defer></script>
+  <script src="js/hero-profile.js?v=20260904a" defer></script>
   <script src="js/radar.js?v=20260903b" defer></script>
   <script src="js/showcase.js?v=20260903b" defer></script>
   <script src="js/certificate-explorer.js?v=20260903b" defer></script>

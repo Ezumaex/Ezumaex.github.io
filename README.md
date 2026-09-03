@@ -14,6 +14,7 @@ The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three
 ├── styles.css                          # Shared visual system and responsive styles
 ├── js/
 │   ├── site.js                         # Navigation, interactions, and home-page data rendering
+│   ├── hero-profile.js                 # Pausable rotating titles, with reduced-motion text changes
 │   ├── certificates.js                 # Full-library search, filters, and certificate dialog
 │   ├── certificate-explorer.js         # Home-page certificate list and large selected preview
 │   ├── motion-preference.js            # OS preference and optional local motion setting
@@ -45,6 +46,14 @@ python scripts/serve.py
 ```
 
 Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/). No dependency installation is required. The preview server binds only to localhost and disables caching; it is development tooling, not part of the deployed site.
+
+## Replace the portrait placeholder
+
+1. Add your own square headshot to `assets/images/`, for example `profile-photo.webp` (at least 400 × 400 pixels).
+2. In `index.html`, find `class="profile-photo"` and change the image `src` to `assets/images/profile-photo.webp` and its `alt` to `Portrait of Joerelle Jay P. Bisnar`.
+3. Remove the `Photo coming soon` caption. The circular frame and face-friendly crop stay in place; adjust `object-position` in `.profile-photo img` in `motion.css` if needed.
+
+The current neutral avatar is intentionally a placeholder, not a generated or stock portrait. No personal image is fabricated. The four rotating titles are maintained in `js/hero-profile.js`; keep the accessible summary and longest-title sizing text in `index.html` aligned if you edit them. Titles type and erase with full motion, switch complete words with reduced motion, and can always be paused. They stop updating while offscreen or in a hidden tab. Without JavaScript the first title remains readable.
 
 ## Add or update a project
 
@@ -195,6 +204,7 @@ Before publishing:
 node scripts/sync-fallbacks.mjs
 node scripts/validate.mjs
 node scripts/test-motion.mjs
+node scripts/test-hero-profile.mjs
 python scripts/serve.py
 ```
 

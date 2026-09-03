@@ -2,6 +2,36 @@
 .scroll-progress { width: 100%; transform: scaleX(0); transform-origin: left; }
 .status-dot, .hero-role span::after, .network-orb { animation: none; }
 .hero-role span::after { display: none; }
+/* A replaceable portrait slot and a stable, pausable introduction. */
+.hero-intro { display: flex; align-items: center; gap: 1.3rem; margin-bottom: 1.7rem; }
+.hero-intro > div { min-width: 0; }
+.hero-intro .hero-greeting { font-size: .875rem; }
+.hero-intro .availability { margin-bottom: 0; font-size: .75rem; }
+.profile-photo { flex: 0 0 112px; margin: 0; text-align: center; }
+.profile-photo img { display: block; width: 112px; height: 112px; object-fit: cover; object-position: center 35%; border: 1px solid #82bca580; border-radius: 50%; background: #0c2d25; box-shadow: 0 0 0 5px #90bea00b; }
+.profile-photo figcaption { margin-top: .55rem; color: #a5bcb2; font-size: .75rem; line-height: 1.4; }
+.hero-role-row { display: flex; align-items: center; gap: .65rem; max-width: 36rem; margin-bottom: .42rem; }
+.hero-role-row .hero-role { flex: 1; min-width: 0; margin: 0; }
+.hero-role-text { display: grid; }
+.hero-role-text > span { grid-area: 1 / 1; }
+.role-sizer { visibility: hidden; }
+.hero-role #rotating-role::after { display: inline-block; position: absolute; margin-top: .2em; animation: none; }
+.motion-off .hero-role #rotating-role::after { display: none; }
+.role-toggle { flex-shrink: 0; min-width: 4rem; min-height: 44px; padding: .4rem .5rem; color: #b7cfc2; border: 1px solid #53756270; border-radius: .3rem; background: transparent; font-size: .875rem; cursor: pointer; }
+.role-toggle:hover { color: #f0f8f3; border-color: #9bc1ab; background: #b7cfc20b; }
+.role-toggle:focus-visible { outline: 2px solid var(--teal-bright); outline-offset: 4px; }
+@media (max-width: 600px) {
+  .hero-intro { gap: 1rem; }
+  .profile-photo { flex-basis: 96px; }
+  .profile-photo img { width: 96px; height: 96px; }
+  .hero-intro .availability { font-size: .75rem; padding: .3rem .45rem; }
+  .hero-role-row { align-items: flex-start; }
+}
+@media print {
+  .role-toggle, .profile-photo { display: none; }
+  .hero-role-text { display: none; }
+  .hero-role .sr-only { position: static; width: auto; height: auto; clip: auto; white-space: normal; }
+}
 .motion-enhanced .hero-copy > * { opacity: 1; animation: none; filter: none; }
 .section { position: relative; }
 .section-heading::after { content: ""; display: block; width: 3.5rem; height: 2px; margin-top: 1.4rem; background: var(--teal); transform-origin: left; }
