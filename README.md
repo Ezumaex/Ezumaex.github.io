@@ -2,7 +2,7 @@
 
 A lightweight, accessible portfolio for [Joerelle Jay P. Bisnar](https://github.com/Ezumaex), hosted at [ezumaex.github.io](https://ezumaex.github.io/). It presents selected projects, technical experience, education, verified certifications, and a public résumé in an editorial résumé-and-developer-dashboard layout.
 
-The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three.js for progressive 3D enhancement. There is no framework, package installation, or build step. The résumé, project links, and certificate originals remain readable without WebGL or JavaScript.
+The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three.js for progressive 3D enhancement. No framework, package installation, or runtime server is required. An optional Node.js command validates and packages the public files into `dist/` for production testing; GitHub Pages still publishes the static files directly from `main` at the repository root. The résumé, project links, and certificate originals remain readable without WebGL or JavaScript.
 
 ## Repository map
 
@@ -15,13 +15,15 @@ The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three
 ├── js/
 │   ├── site.js                         # Navigation, interactions, and home-page data rendering
 │   ├── certificates.js                 # Full-library search, filters, and certificate dialog
+│   ├── certificate-explorer.js         # Home-page certificate list and large selected preview
 │   ├── motion-preference.js            # OS preference and optional local motion setting
 │   ├── motion.js                       # Native DOM transitions and motion control
 │   ├── showcase.js                     # Accessible project selector, independent of WebGL
-│   ├── three-scenes.js                 # Lazy, render-on-demand hero and project scenes
+│   ├── radar.js                        # Evidence-backed skill nodes and bounded HTML fallback scan
+│   ├── three-scenes.js                 # Lazy bounded radar and demand-rendered project scenes
 │   └── vendor/three-r185/              # Pinned Three.js 0.185.1 modules and MIT license
 ├── motion.css                         # Progressive motion and responsive 3D layout
-├── scripts/                           # Optional validation and static fallback maintenance
+├── scripts/                           # Validation, static packaging, preview, and fallback maintenance
 ├── data/
 │   ├── projects.json                   # Project content
 │   ├── certificates.json               # Certificate content
@@ -39,10 +41,10 @@ The site uses plain HTML, CSS, JavaScript, and JSON, with locally vendored Three
 The pages load JSON with `fetch`, so opening `index.html` directly from the filesystem may not work. Start a small local server from the repository root instead:
 
 ```bash
-python -m http.server 4173
+python scripts/serve.py
 ```
 
-Then open `http://localhost:4173/`. No dependency installation is required.
+Then open [http://127.0.0.1:4173/](http://127.0.0.1:4173/). No dependency installation is required. The preview server binds only to localhost and disables caching; it is development tooling, not part of the deployed site.
 
 ## Add or update a project
 
@@ -76,6 +78,8 @@ Edit `data/projects.json`. Each item follows this shape:
 - Keep `highlights`, `architecture`, and `note` evidence-based; these fields power the expandable project details.
 - Keep JSON valid: double-quote strings and separate items with commas.
 
+After the updated JSON and assets are published, featured records automatically populate the project list, large preview, technology labels, and implementation panels on the next page load. There is no separate gallery list to maintain. Run `node scripts/sync-fallbacks.mjs` after content changes to refresh the saved no-JavaScript HTML before validation or packaging.
+
 ## Add a certificate
 
 1. Export or download the certificate as a clear PNG or JPG. Optionally keep its public PDF as well.
@@ -101,7 +105,7 @@ Edit `data/projects.json`. Each item follows this shape:
 }
 ```
 
-Use `YYYY-MM-DD` for `issued` so newest certificates sort first. If there is no public credential page or credential ID, use an empty string rather than inventing one. The same record automatically appears in the searchable home-page grid and the full certificate library; `category` powers the full-library filter.
+Use `YYYY-MM-DD` for `issued` so newest certificates sort first. If there is no public credential page or credential ID, use an empty string rather than inventing one. The same record automatically appears in the searchable home-page explorer, its large selected preview, and the full certificate library on the next page load after publishing; `category` powers the full-library filter. Search results, counts, preview metadata, and original-file links are generated from this JSON, not maintained as separate cards. Run `node scripts/sync-fallbacks.mjs` after content changes to keep the saved no-JavaScript links current too.
 
 ## Add verified collaborative work
 
@@ -163,7 +167,7 @@ Before publishing:
 
 1. Run the local server and open both `/` and `/certifications.html`.
 2. Check the layout at desktop and mobile widths.
-3. Search and expand certificates on the home page, then search, filter, open, and close a preview in the full library.
+3. Search and select certificates in the home-page explorer, then search, filter, open, and close a preview in the full library.
 4. Expand each project implementation panel.
 5. Open every project, credential, social, résumé, and navigation link.
 6. Confirm `data/projects.json`, `data/certificates.json`, `data/skills.json`, and `data/contributions.json` parse as valid JSON.
@@ -174,13 +178,16 @@ Before publishing:
 
 ### Motion and 3D maintenance
 
-- The hero is a restrained layered wireframe. Pointer movement, scrolling, and the **Rotate wireframe** button change its orientation.
-- The project showcase uses the same featured projects in `data/projects.json`. Selection, arrow buttons, keyboard arrows/Home/End, and optional horizontal swipes work without Three.js.
+- The hero is a monochrome radar with concentric rings, a moving sweep, detected points, and pointer-reactive depth. Its first visible scan is bounded: 4.8 seconds on desktop or 3.6 seconds in compact/coarse-pointer mode, then it rests. Click or tap a skill node or use **Run scan** to repeat it. Hidden-tab and offscreen time do not consume the visible scan; there is no permanent idle loop.
+- Radar nodes map to real records in `data/skills.json`: React, Node.js, ESP32 & MQTT, VB.NET & SQL Server, Networking, and Java. Their positions are visual composition, not proficiency levels. HTML buttons expose the evidence context and connect to related projects or the Skills section; keyboard arrows/Home/End, touch, and reduced-motion access remain available. If WebGL cannot load, a bounded HTML sweep preserves the visual identity and the same controls.
+- The project showcase uses the same featured projects in `data/projects.json`. Its project list controls a large layered preview with animated captions, numbers, technology labels, and related-card highlights. Selection, arrow buttons, keyboard arrows/Home/End, and optional horizontal swipes work without Three.js; the implementation link opens the matching details. Normal vertical scrolling and pinch zoom remain native.
 - Skill filtering matches the verified repository URLs in `data/skills.json`. Java currently has learning evidence, not a featured project; the gallery says so.
-- The footer's **Reduce motion** preference is stored on the visitor's device. An operating-system reduced-motion preference always takes precedence. Certificates use lightweight native transitions, not WebGL.
-- Three.js is imported only when a scene approaches the viewport. Both scenes render on demand and stop when settled, offscreen, or hidden. Mobile uses one preview texture and a lower pixel ratio; sustained slow rendering lowers resolution further or falls back to a static image.
+- The home-page certificate explorer pairs a searchable list with a large preview and animated credential details. Arrow keys/Home/End change selection; original and verification links remain ordinary links. The full library retains search, category filtering, and its accessible preview dialog. Certificates use native DOM transitions, not WebGL.
+- Section entrances cover the summary, skills, education, résumé, and contact links. Experience markers and the timeline activate as they enter view. Collaborative work uses expandable, verified contribution areas with scroll feedback—not invented milestone dates, proficiency scores, or completion percentages. Organization repositories remain read-only evidence sources.
+- The footer's **Reduce motion** preference is stored on the visitor's device. An operating-system reduced-motion preference always takes precedence. Reduced motion stops the scans and visual transitions while preserving all content and controls.
+- Three.js is imported only when a scene approaches the viewport. The radar renders during its finite scan or pointer settling; project panels render during interaction or settling. Both stop offscreen or while the tab is hidden. Mobile uses one preview texture and a lower pixel ratio; sustained slow rendering lowers resolution further or falls back to HTML content.
 - No shadows, postprocessing, animation framework, trackers, or new external runtime requests were added. The pinned modules are served from this repository.
-- After updating JSON content, run `node scripts/sync-fallbacks.mjs` to refresh the saved HTML lists for visitors without JavaScript. Normal JSON-powered content updates immediately; this optional maintenance step keeps the no-script copy current too.
+- After updating JSON content, run `node scripts/sync-fallbacks.mjs` to refresh the saved HTML lists for visitors without JavaScript. Normal JSON-powered content updates on the next page load after publication; validation checks that the no-script copy matches the same records.
 
 ### Local checks
 
@@ -190,6 +197,24 @@ node scripts/validate.mjs
 node scripts/test-motion.mjs
 python scripts/serve.py
 ```
+
+To validate and test the packaged production files, use Node.js for the optional build and Python for the local preview:
+
+```text
+node scripts/build.mjs --dry-run
+node scripts/build.mjs
+python scripts/serve.py --directory dist --port 4174
+```
+
+Open [http://127.0.0.1:4174/](http://127.0.0.1:4174/). The build runs the static validator before copying only public runtime HTML, CSS, JavaScript, JSON, assets, the vendor license, and `.nojekyll`. The ignored `dist/` output contains no development scripts, documentation, Git metadata, or ownership manifest. Rebuilds refuse to overwrite unknown or externally modified output files rather than deleting them; `.dist-build-manifest.json` is a local, ignored ownership record.
+
+To check repository-style GitHub Pages paths without changing the site's relative URLs, stop that preview and run:
+
+```text
+python scripts/serve.py --directory dist --port 4174 --base-path /portfolio/
+```
+
+Open [http://127.0.0.1:4174/portfolio/](http://127.0.0.1:4174/portfolio/). Fault-injection routes also work beneath this prefix, for example `/portfolio/__qa__/no-three/`. Rebuild after further source changes before testing the final production snapshot.
 
 The optional preview server disables caching and provides fault-injection routes:
 
@@ -204,7 +229,7 @@ See [the animation validation report](docs/animation-validation.md) for the test
 
 ### Publishing
 
-This is the user-site repository `Ezumaex/Ezumaex.github.io`. GitHub Pages can publish it directly from the repository root without a build process.
+This is the user-site repository `Ezumaex/Ezumaex.github.io`. GitHub Pages publishes it directly from the repository root; the optional local `dist/` packaging step is for production verification and does not change the configured publishing source. No Node.js, Python, Vite, backend, or database runs on GitHub Pages.
 
 1. Push changes to the `main` branch.
 2. In the repository, open **Settings → Pages**.

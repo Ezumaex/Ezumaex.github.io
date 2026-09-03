@@ -704,7 +704,7 @@ select:focus-visible { border-color: var(--teal); outline: 3px solid rgba(15, 11
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  html:not(.motion-test-full) *, html:not(.motion-test-full) *::before, html:not(.motion-test-full) *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   .reveal { opacity: 1; transform: none; }
   .hero-role span::after { display: none; }
   .hero-canvas { display: none; }

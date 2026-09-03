@@ -1,4 +1,4 @@
-/* Three.js r185: isolated, lazy, render-on-demand enhancements. No content lives here. */
+/* Three.js r185: a bounded radar scan + demand-rendered project panels. */
 const motionAllowed = () => window.portfolioMotion?.enabled ?? !matchMedia("(prefers-reduced-motion: reduce)").matches;
 const compact = () => matchMedia("(max-width: 768px), (pointer: coarse)").matches;
 const debug = location.hostname === "127.0.0.1" && new URLSearchParams(location.search).has("motionDebug");
@@ -66,10 +66,16 @@ class DemandScene {
     const width = Math.max(1, this.host.clientWidth);
     const height = Math.max(1, this.canvas.clientHeight || this.host.clientHeight);
     this.ratio = Math.min(this.ratio, compact() ? 1 : 1.5);
-    this.renderer.setPixelRatio(this.ratio);
-    this.renderer.setSize(width, height, false);
-    this.camera.aspect = width / height;
-    this.camera.position.z = this.host.id === "project-scene" ? (width < 600 ? 8 : 7.1) : 7.8;
+    if (this.width !== width || this.height !== height || this.bufferRatio !== this.ratio) {
+      this.renderer.setPixelRatio(this.ratio);
+      this.renderer.setSize(width, height, false);
+      this.width = width; this.height = height; this.bufferRatio = this.ratio;
+    }
+    if (this.onResize) this.onResize(width, height);
+    else {
+      this.camera.aspect = width / height;
+      this.camera.position.z = 7.8;
+    }
     this.camera.updateProjectionMatrix();
     this.dirty = true;
     this.invalidate();
@@ -87,8 +93,12 @@ class DemandScene {
     this.lastTime = time;
     const alpha = 1 - Math.exp(-Math.min(interval, 50) / 85);
     try {
-      const moving = this.update?.(alpha) || false;
+      const moving = this.update?.(alpha, Math.min(interval, 50)) || false;
       this.renderer.render(this.scene, this.camera);
+      if (this.wantsReady && (this.canPresent?.() ?? true) && !this.host.classList.contains("three-ready")) {
+        this.host.classList.add("three-ready");
+        this.onReady?.();
+      }
       this.frames++;
       // Only consecutive animation frames count; first-frame compilation is excluded.
       if (this.frames > 8 && interval < 180) this.intervals.push(interval);
@@ -105,6 +115,7 @@ class DemandScene {
       }
       this.state = { state: moving ? "rendering" : "idle", frames: this.frames, activeFps: this.intervals.length > 8 ? Math.round(1000 / Math.max(1, mean)) : null, samples: this.intervals.length, dpr: this.ratio, drawCalls: this.renderer.info.render.calls, triangles: this.renderer.info.render.triangles, geometries: this.renderer.info.memory.geometries, textures: this.renderer.info.memory.textures };
       if (debug) {
+        Object.assign(this.state, this.metrics?.());
         this.state.textureMiB = +(Array.from(this.resources).filter(item => item.isTexture).reduce((total, item) => total + (item.image?.width || 0) * (item.image?.height || 0) * 4 * 4 / 3, 0) / 1048576).toFixed(2);
         this.state.jsHeapMiB = performance.memory ? +(performance.memory.usedJSHeapSize / 1048576).toFixed(1) : "unavailable";
       }
@@ -113,11 +124,11 @@ class DemandScene {
       this.dirty = moving;
       if (moving) this.invalidate();
       else this.lastTime = 0;
-    } catch { this.dispose("static · renderer unavailable"); }
+    } catch (error) { if (debug) this.state.error = error.message; this.dispose("static · renderer unavailable"); }
   }
   ready() {
     if (this.disposed) return;
-    this.host.classList.add("three-ready");
+    this.wantsReady = true;
     this.invalidate();
   }
   pause(reason) {
@@ -132,7 +143,7 @@ class DemandScene {
     this.disposed = true;
     this.pause(reason);
     this.host.classList.remove("three-ready");
-    this.host.querySelector(".hero-inspect")?.setAttribute("hidden", "");
+    this.onDispose?.();
     if (this.host.id === "project-scene") document.querySelector("#showcase-hint").textContent = "Use the project buttons below to explore.";
     this.resizeObserver.disconnect();
     this.visibilityObserver.disconnect();
@@ -141,6 +152,8 @@ class DemandScene {
     this.resources.clear();
     this.scene.clear();
     this.renderer.dispose();
+    records.set(this.host.id, this.state);
+    report();
     // Preserve the canvas context so turning motion back on can reuse it safely.
   }
 }
@@ -149,7 +162,6 @@ function bindPointer(view, object, baseX = .2, baseY = -.35) {
   let targetX = baseX;
   let targetY = baseY;
   let turn = 0;
-  let scroll = 0;
   const point = event => {
     if (event.pointerType === "touch" && !event.buttons) return;
     const bounds = view.host.getBoundingClientRect();
@@ -160,15 +172,10 @@ function bindPointer(view, object, baseX = .2, baseY = -.35) {
   view.on(view.host, "pointermove", point, { passive: true });
   view.on(view.host, "pointerleave", () => { targetX = baseX; targetY = baseY; view.invalidate(); });
   view.on(view.host, "pointercancel", () => { targetX = baseX; targetY = baseY; view.invalidate(); });
-  view.on(window, "scroll", () => {
-    if (!view.visible) return;
-    scroll = Math.max(-.1, Math.min(.1, view.host.getBoundingClientRect().top / innerHeight * .12));
-    view.invalidate();
-  }, { passive: true });
   return {
     rotate() { turn += Math.PI / 2; view.invalidate(); },
     update(alpha) {
-      const x = targetX + scroll, y = targetY + turn;
+      const x = targetX, y = targetY + turn;
       object.rotation.x += (x - object.rotation.x) * alpha;
       object.rotation.y += (y - object.rotation.y) * alpha;
       return Math.abs(x - object.rotation.x) + Math.abs(y - object.rotation.y) > .0004;
@@ -176,43 +183,116 @@ function bindPointer(view, object, baseX = .2, baseY = -.35) {
   };
 }
 
+// A finite sweep advances only when DemandScene actually renders a visible frame.
+function createRadarClock(duration = 4800) {
+  let elapsed = duration;
+  return {
+    start() { elapsed = 0; },
+    advance(delta) { elapsed = Math.min(duration, elapsed + Math.max(0, Math.min(delta, 50))); return elapsed < duration; },
+    get running() { return elapsed < duration; },
+    get angle() { return Math.PI / 2 - (elapsed / duration) * Math.PI * 2; },
+    get elapsed() { return elapsed; }
+  };
+}
+
 function heroScene(T, host) {
   const view = new DemandScene(T, host, host.querySelector("canvas"));
+  view.camera = new T.OrthographicCamera(-1.111, 1.111, 1.111, -1.111, .1, 20);
+  view.camera.position.z = 5;
+  view.onResize = (width, height) => {
+    const aspect = width / height;
+    view.camera.left = -1.111 * aspect; view.camera.right = 1.111 * aspect;
+    view.camera.top = 1.111; view.camera.bottom = -1.111;
+  };
+  view.resize();
   const group = new T.Group();
-  group.position.y = .25;
   view.scene.add(group);
-  const lineMaterial = view.track(new T.LineBasicMaterial({ color: 0x8ab9a6, transparent: true, opacity: .72 }));
-  const faintMaterial = view.track(new T.LineBasicMaterial({ color: 0x537d6d, transparent: true, opacity: .55 }));
-  for (let i = 0; i < 3; i++) {
-    const source = new T.BoxGeometry(2.5 - i * .45, 2.5 - i * .45, .12);
-    const edges = view.track(new T.EdgesGeometry(source));
-    source.dispose();
-    const layer = new T.LineSegments(edges, i === 1 ? lineMaterial : faintMaterial);
-    layer.position.z = (i - 1) * .72;
-    layer.rotation.z = Math.PI / 4;
-    group.add(layer);
+  const ringVertices = [];
+  const segments = compact() ? 64 : 96;
+  for (const radius of [.24, .5, .74, .94]) {
+    for (let i = 0; i < segments; i++) {
+      const a = i / segments * Math.PI * 2, b = (i + 1) / segments * Math.PI * 2;
+      ringVertices.push(Math.cos(a) * radius, Math.sin(a) * radius, -.03, Math.cos(b) * radius, Math.sin(b) * radius, -.03);
+    }
   }
-  const wire = [];
-  const nodes = [];
-  const count = compact() ? 8 : 16;
-  for (let i = 0; i < count; i++) {
-    const angle = i * Math.PI * 2 / count;
-    const x = Math.cos(angle) * 1.45, y = Math.sin(angle) * 1.45;
-    wire.push(x, y, -.72, x * .7, y * .7, .72);
-    nodes.push(x, y, -.72, x * .7, y * .7, .72);
+  for (let i = 0; i < 48; i++) {
+    const angle = i / 48 * Math.PI * 2, radius = i % 4 ? .965 : .985;
+    ringVertices.push(Math.cos(angle) * .94, Math.sin(angle) * .94, -.03, Math.cos(angle) * radius, Math.sin(angle) * radius, -.03);
   }
-  const wireGeometry = view.track(new T.BufferGeometry());
-  wireGeometry.setAttribute("position", new T.Float32BufferAttribute(wire, 3));
-  group.add(new T.LineSegments(wireGeometry, faintMaterial));
-  const nodeGeometry = view.track(new T.BufferGeometry());
-  nodeGeometry.setAttribute("position", new T.Float32BufferAttribute(nodes, 3));
-  const points = view.track(new T.PointsMaterial({ color: 0xc6dfd4, size: compact() ? .05 : .04, sizeAttenuation: true }));
-  group.add(new T.Points(nodeGeometry, points));
-  const pointer = bindPointer(view, group, .25, -.45);
-  view.update = alpha => pointer.update(alpha);
-  const rotate = host.querySelector(".hero-inspect");
-  rotate.hidden = false;
-  view.on(rotate, "click", () => pointer.rotate());
+  const ringGeometry = view.track(new T.BufferGeometry());
+  ringGeometry.setAttribute("position", new T.Float32BufferAttribute(ringVertices, 3));
+  group.add(new T.LineSegments(ringGeometry, view.track(new T.LineBasicMaterial({ color: 0x9bb5a1, transparent: true, opacity: .48 }))));
+  const axes = view.track(new T.BufferGeometry());
+  axes.setAttribute("position", new T.Float32BufferAttribute([-.94, 0, -.04, .94, 0, -.04, 0, -.94, -.04, 0, .94, -.04], 3));
+  group.add(new T.LineSegments(axes, view.track(new T.LineBasicMaterial({ color: 0x8ba899, transparent: true, opacity: .24 }))));
+
+  const sweep = new T.Group();
+  const positions = [], colors = [];
+  const steps = compact() ? 24 : 40;
+  for (let i = 0; i < steps; i++) {
+    const a = i / steps * .95, b = (i + 1) / steps * .95;
+    positions.push(0, 0, .015, Math.cos(a) * .925, Math.sin(a) * .925, .015, Math.cos(b) * .925, Math.sin(b) * .925, .015);
+    const fade = (1 - i / steps) * .75;
+    for (let vertex = 0; vertex < 3; vertex++) colors.push(.64 * fade, .84 * fade, .7 * fade);
+  }
+  const sweepGeometry = view.track(new T.BufferGeometry());
+  sweepGeometry.setAttribute("position", new T.Float32BufferAttribute(positions, 3));
+  sweepGeometry.setAttribute("color", new T.Float32BufferAttribute(colors, 3));
+  const sweepMaterial = view.track(new T.MeshBasicMaterial({ vertexColors: true, transparent: true, opacity: .3, depthWrite: false, blending: T.AdditiveBlending, side: T.DoubleSide }));
+  sweep.add(new T.Mesh(sweepGeometry, sweepMaterial));
+  const beamGeometry = view.track(new T.BufferGeometry());
+  beamGeometry.setAttribute("position", new T.Float32BufferAttribute([0, 0, .022, .925, 0, .022], 3));
+  const beamMaterial = view.track(new T.LineBasicMaterial({ color: 0xd1ead5, transparent: true, opacity: .8 }));
+  sweep.add(new T.Line(beamGeometry, beamMaterial));
+  group.add(sweep);
+
+  const dotGeometry = view.track(new T.CircleGeometry(.018, 12));
+  const dotMaterial = view.track(new T.MeshBasicMaterial({ color: 0xffffff }));
+  const matrix = new T.Matrix4();
+  const color = new T.Color();
+  const baseColor = new T.Color(0x6a9278), activeColor = new T.Color(0xe0f0dc);
+  let dotMesh = null, nodes = [], selectedName = "";
+  function updateNodes() {
+    nodes = window.portfolioRadar?.nodes || [];
+    selectedName = window.portfolioRadar?.selection?.name || "";
+    if (dotMesh) { group.remove(dotMesh); dotMesh.dispose(); view.resources.delete(dotMesh); }
+    dotMesh = view.track(new T.InstancedMesh(dotGeometry, dotMaterial, Math.max(1, nodes.length)));
+    dotMesh.count = nodes.length;
+    nodes.forEach((node, index) => {
+      matrix.makeTranslation(node.x, node.y, .035);
+      dotMesh.setMatrixAt(index, matrix); dotMesh.setColorAt(index, baseColor);
+    });
+    if (nodes.length) { dotMesh.instanceMatrix.needsUpdate = true; dotMesh.instanceColor.needsUpdate = true; }
+    group.add(dotMesh);
+    view.invalidate();
+  }
+  const clock = createRadarClock(window.portfolioRadar?.duration || 4800);
+  if (window.portfolioRadar?.scanning) clock.start();
+  const pointer = bindPointer(view, group, 0, 0);
+  view.on(document, "portfolio:radar-ready", updateNodes);
+  view.on(document, "portfolio:radar-selection", event => { selectedName = event.detail.name; view.invalidate(); });
+  view.on(document, "portfolio:radar-scan", () => { clock.start(); view.invalidate(); });
+  view.onReady = () => window.portfolioRadar?.useWebGL(true);
+  view.onDispose = () => window.portfolioRadar?.useWebGL(false);
+  view.metrics = () => ({ scanRunning: clock.running, scanAngle: +((clock.angle * 180 / Math.PI + 360) % 360).toFixed(1), scanElapsed: Math.round(clock.elapsed) });
+  view.update = (alpha, delta) => {
+    const wasRunning = clock.running;
+    const scanning = clock.advance(delta);
+    const moving = pointer.update(alpha);
+    sweep.rotation.z = clock.angle;
+    sweepMaterial.opacity = scanning ? .32 : .07;
+    beamMaterial.opacity = scanning ? .8 : .28;
+    nodes.forEach((node, index) => {
+      const lag = (Math.atan2(node.y, node.x) - clock.angle + Math.PI * 4) % (Math.PI * 2);
+      const detected = scanning ? Math.max(0, 1 - lag / .85) : 0;
+      color.copy(baseColor).lerp(activeColor, node.name === selectedName ? 1 : detected);
+      dotMesh.setColorAt(index, color);
+    });
+    if (nodes.length) dotMesh.instanceColor.needsUpdate = true;
+    if (wasRunning && !scanning) window.portfolioRadar?.finish();
+    return scanning || moving;
+  };
+  updateNodes();
   view.ready();
   return view;
 }
@@ -230,8 +310,16 @@ function projectScene(T, host) {
   let desired = new Set();
   let selection = window.portfolioShowcase;
   const loader = new T.TextureLoader();
-  const pointer = bindPointer(view, group, -.05, -.12);
+  const pointer = bindPointer(view, group, -.025, -.055);
+  view.onResize = (width, height) => {
+    view.camera.aspect = width / height;
+    // Fit the panel in both portrait and landscape without clipping its text.
+    const viewHeight = Math.max(4.4, 6.4 / view.camera.aspect);
+    view.camera.position.z = viewHeight / (2 * Math.tan(Math.PI / 10)) + .35;
+  };
+  view.resize();
   const hasActiveTexture = () => !!planes.get(selection?.active);
+  view.canPresent = hasActiveTexture;
   async function loadPanel(project, index) {
     const path = project.previewImage || project.image;
     if (!path || planes.has(index) || pending.has(index)) return;
@@ -246,7 +334,7 @@ function projectScene(T, host) {
       const material = view.track(new T.MeshBasicMaterial({ map: texture, color: 0xffffff, side: T.FrontSide }));
       const frame = new T.Group();
       const mesh = new T.Mesh(geometry, material);
-      mesh.scale.set(4.5, 4.5 / aspect, 1);
+      mesh.scale.set(5.45, 5.45 / aspect, 1);
       const outline = new T.LineSegments(edgeGeometry, border);
       outline.scale.copy(mesh.scale);
       outline.position.z = .008;
@@ -287,10 +375,10 @@ function projectScene(T, host) {
     for (const [index, { frame, material }] of planes) {
       const active = index === selection?.active;
       frame.visible = active || (!mobile && selection?.indices.includes(index));
-      const x = active ? -.15 : 3.3;
-      const z = active ? .35 : -1.1;
-      const angle = active ? 0 : -.3;
-      const scale = active ? 1 : .78;
+      const x = active ? -.08 : 4;
+      const z = active ? .35 : -1.6;
+      const angle = active ? 0 : -.38;
+      const scale = active ? 1 : .74;
       const delta = Math.abs(x - frame.position.x) + Math.abs(z - frame.position.z) + Math.abs(angle - frame.rotation.y) + Math.abs(scale - frame.scale.x);
       frame.position.x += (x - frame.position.x) * alpha;
       frame.position.z += (z - frame.position.z) * alpha;
@@ -319,10 +407,9 @@ async function initialize(host, factory) {
     const T = await three();
     if (attempt !== generation || !motionAllowed()) return;
     activeViews.set(host.id, factory(T, host));
-  } catch {
+  } catch (error) {
     host.classList.remove("three-ready");
-    host.querySelector(".hero-inspect")?.setAttribute("hidden", "");
-    records.set(host.id, { state: "static · 3D unavailable" });
+    records.set(host.id, { state: "static · 3D unavailable", ...(debug ? { error: error.message } : {}) });
     report();
   } finally {
     initializing.delete(host.id);

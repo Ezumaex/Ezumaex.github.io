@@ -37,6 +37,7 @@
     "projectType": "Team project · contributor",
     "role": "UI, simulation-integration, web presentation & export contributor",
     "period": "Dec 2024",
+    "contributionAreas": ["Interface & simulation", "Web presentation & exports", "Merged contribution"],
     "description": "A Godot-based educational simulator that visualizes how material dimensions change with temperature.",
     "contributions": [
       "Contributed the Godot interface and scene work, then refactored simulation and controller logic in GDScript.",

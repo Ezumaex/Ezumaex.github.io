@@ -21,8 +21,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="js/motion-preference.js?v=20260903a"></script>
-  <link rel="stylesheet" href="styles.css?v=20260903">
-  <link rel="stylesheet" href="motion.css?v=20260903">
+  <link rel="stylesheet" href="styles.css?v=20260903b">
+  <link rel="stylesheet" href="motion.css?v=20260903b">
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -64,15 +64,22 @@
         </div>
       </div>
 
-      <div class="hero-visual" id="hero-scene">
-        <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
-        <div class="network-orb" aria-hidden="true">
-          <span></span><span></span><span></span><span></span>
-          <i></i><i></i><i></i>
+      <aside class="hero-visual" aria-label="Interactive skills radar">
+        <div class="radar-heading"><p>CONNECTED SYSTEMS</p><span id="radar-status">Explore the evidence</span></div>
+        <div class="radar-stage" id="hero-scene">
+          <canvas class="hero-canvas" id="hero-canvas" aria-hidden="true"></canvas>
+          <div class="radar-fallback" aria-hidden="true"><i></i><i></i><i></i><span class="radar-sweep"></span></div>
+          <div class="radar-nodes" id="radar-nodes" role="group" aria-label="Choose a radar skill"></div>
+          <span class="radar-center" aria-hidden="true">JJB<span>SKILL MAP</span></span>
         </div>
-        <p class="hero-visual-label" aria-hidden="true">CONNECTED SYSTEMS <span>Software · networks · hardware</span></p>
-        <button class="hero-inspect" type="button" hidden>Rotate wireframe <span aria-hidden="true">↻</span></button>
-      </div>
+        <div class="radar-readout" id="radar-readout" aria-live="polite" aria-atomic="true">
+          <p class="radar-context" id="radar-context">Software · networks · hardware</p>
+          <h2 id="radar-skill">Skills with evidence.</h2>
+          <p id="radar-detail">Select a point to connect a technology with the work behind it.</p>
+        </div>
+        <div class="radar-actions"><a id="radar-evidence" href="#skills">Explore evidence <span aria-hidden="true">↓</span></a><button id="radar-scan" type="button" hidden>Run scan <span aria-hidden="true">↻</span></button></div>
+        <p class="radar-note" id="radar-note">A map of verified work and learning, not proficiency scores.</p>
+      </aside>
       <a class="scroll-cue" href="#about" aria-label="Scroll to professional summary">Scroll <span>↓</span></a>
     </section>
 
@@ -181,6 +188,16 @@
             <label for="showcase-skill">Evidence for</label>
             <select id="showcase-skill"><option value="">All featured projects</option></select>
           </div>
+          <div class="showcase-layout">
+          <div class="showcase-rail">
+            <div id="showcase-projects" role="group" aria-label="Select a project"></div>
+            <div class="showcase-controls">
+              <button type="button" id="showcase-prev" aria-label="Previous project">←</button>
+              <span>Explore at your pace</span>
+              <button type="button" id="showcase-next" aria-label="Next project">→</button>
+            </div>
+          </div>
+          <div class="showcase-preview">
           <div class="showcase-stage" id="project-scene">
             <img id="showcase-fallback" class="showcase-fallback" alt="" loading="lazy" width="960" height="600">
             <canvas id="project-canvas" aria-hidden="true"></canvas>
@@ -190,12 +207,10 @@
             <p class="project-label" id="showcase-counter"></p>
             <h3 id="showcase-title"></h3>
             <p id="showcase-architecture"></p>
+            <ul class="tag-list" id="showcase-technologies" aria-label="Selected project technologies"></ul>
             <a class="text-link" id="showcase-details" href="#project-grid">Read implementation details ↓</a>
           </div>
-          <div class="showcase-controls">
-            <button type="button" id="showcase-prev" aria-label="Previous project">←</button>
-            <div id="showcase-projects" role="group" aria-label="Select a project"></div>
-            <button type="button" id="showcase-next" aria-label="Next project">→</button>
+          </div>
           </div>
           <p id="showcase-empty" class="showcase-empty" hidden>No featured project matches this skill yet. See the learning and professional evidence in the Skills section.</p>
         </div>
@@ -225,14 +240,15 @@
         <div class="section-heading section-heading-wide">
           <p class="eyebrow">Credentials</p>
           <h2 id="certifications-title">Certifications</h2>
-          <p class="section-note">Search the verified collection and expand a card for skills, credential details, and the original certificate.</p>
+          <p class="section-note">Choose a credential to inspect the original and its supporting details. Search by course, issuer, or skill.</p>
         </div>
         <div class="home-certificate-toolbar" role="search">
           <label for="home-certificate-search">Search certificates</label>
           <input id="home-certificate-search" type="search" placeholder="Course, issuer, or skill" autocomplete="off">
           <p id="home-certificate-count" aria-live="polite">Loading certificates…</p>
         </div>
-        <div class="home-certificate-grid" id="home-certificate-grid" aria-live="polite">
+        <div class="certificate-explorer" id="certificate-explorer">
+        <div class="home-certificate-grid" id="home-certificate-grid" role="group" aria-label="Select a certificate">
           <!-- fallback:certificates:start -->
 <ul class="fallback-list"><li><a href="assets/certificates/java-basic-hackerrank.png">Java (Basic)</a> — HackerRank · August 2026 · <a href="https://www.hackerrank.com/certificates/73be3e943a9a">Verify</a></li>
 <li><a href="assets/certificates/foundational-csharp-microsoft.png">Foundational C# with Microsoft</a> — freeCodeCamp · August 2026 · <a href="https://freecodecamp.org/certification/ezumaex/foundational-c-sharp-with-microsoft">Verify</a></li>
@@ -244,6 +260,17 @@
 <li><a href="assets/certificates/python-pro-bootcamp.png">100 Days of Code: The Complete Python Pro Bootcamp</a> — Udemy · March 2025 · <a href="https://www.udemy.com/certificate/UC-3bf8476e-270f-4334-862a-b00fc554ec03/">Verify</a></li>
 <li><a href="assets/certificates/python-programming-basics.png">Python Programming Basics</a> — Huawei Talent Online · February 2025</li></ul>
           <!-- fallback:certificates:end -->
+        </div>
+        <article class="certificate-inspector" id="certificate-inspector" aria-label="Selected certificate" hidden>
+          <a class="certificate-sheet" id="certificate-sheet-link" href="certifications.html" target="_blank" rel="noreferrer" aria-label="Open original certificate in a new tab"><img id="certificate-sheet" alt="" width="1280" height="960" loading="lazy"><span>Open original <span aria-hidden="true">↗</span></span></a>
+          <div class="certificate-inspector-copy">
+            <div aria-live="polite" aria-atomic="true"><p class="certificate-kicker" id="certificate-inspector-meta"></p><h3 id="certificate-inspector-title"></h3></div>
+            <p id="certificate-inspector-description"></p>
+            <ul class="certificate-skills" id="certificate-inspector-skills" aria-label="Certificate skills"></ul>
+            <p class="certificate-credential" id="certificate-inspector-credential"></p>
+            <div class="certificate-actions"><a class="text-link" id="certificate-inspector-original" href="certifications.html" target="_blank" rel="noreferrer">Open original ↗</a><a class="text-link" id="certificate-inspector-verify" hidden target="_blank" rel="noreferrer">Verify credential ↗</a></div>
+          </div>
+        </article>
         </div>
         <p class="section-action"><a class="text-link" href="certifications.html">Open the full certificate library ↗</a></p>
       </section>
@@ -285,9 +312,11 @@
     <p>Built for accessibility, maintainability, and GitHub Pages · 2026</p>
     <button class="motion-toggle" type="button" aria-pressed="false" hidden>Reduce motion</button>
   </footer>
-  <script src="js/showcase.js?v=20260903" defer></script>
-  <script src="js/site.js?v=20260903" defer></script>
-  <script src="js/motion.js?v=20260903a" defer></script>
-  <script type="module" src="js/three-scenes.js?v=20260903"></script>
+  <script src="js/motion.js?v=20260903b" defer></script>
+  <script src="js/radar.js?v=20260903b" defer></script>
+  <script src="js/showcase.js?v=20260903b" defer></script>
+  <script src="js/certificate-explorer.js?v=20260903b" defer></script>
+  <script src="js/site.js?v=20260903b" defer></script>
+  <script type="module" src="js/three-scenes.js?v=20260903b"></script>
 </body>
 </html>

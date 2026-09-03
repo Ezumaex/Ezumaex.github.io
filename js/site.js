@@ -8,11 +8,6 @@ const contributionGrid = document.querySelector("#contribution-grid");
 const scrollProgress = document.querySelector("#scroll-progress");
 const greeting = document.querySelector("#hero-greeting");
 const manilaTime = document.querySelector("#manila-time");
-const homeCertificateGrid = document.querySelector("#home-certificate-grid");
-const homeCertificateSearch = document.querySelector("#home-certificate-search");
-const homeCertificateCount = document.querySelector("#home-certificate-count");
-const certificateTotal = document.querySelector("#certificate-total");
-const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
 
 if (menuButton && siteNav) {
   document.documentElement.classList.add("navigation-ready");
@@ -80,51 +75,48 @@ if (greeting || manilaTime) {
   window.setInterval(() => { if (!document.hidden) updateManilaTime(); }, 60000);
 }
 
+let progressFrame = 0;
 function updateScrollProgress() {
+  progressFrame = 0;
   if (!scrollProgress) return;
   const available = document.documentElement.scrollHeight - window.innerHeight;
-  const percent = available > 0 ? Math.min(100, (window.scrollY / available) * 100) : 0;
-  scrollProgress.style.width = `${percent}%`;
+  const progress = available > 0 ? Math.max(0, Math.min(1, window.scrollY / available)) : 0;
+  scrollProgress.style.transform = `scaleX(${progress})`;
 }
-
-updateScrollProgress();
-window.addEventListener("scroll", updateScrollProgress, { passive: true });
-window.addEventListener("resize", updateScrollProgress);
-
-const revealItems = document.querySelectorAll(".reveal");
-if (reducedMotion.matches || !("IntersectionObserver" in window)) {
-  revealItems.forEach((item) => item.classList.add("is-visible"));
-} else {
-  const revealObserver = new IntersectionObserver((entries, observer) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add("is-visible");
-      observer.unobserve(entry.target);
-    });
-  }, { threshold: 0, rootMargin: "0px 0px -24px" });
-  revealItems.forEach((item) => revealObserver.observe(item));
+function scheduleProgress() {
+  if (!progressFrame) progressFrame = requestAnimationFrame(updateScrollProgress);
 }
+scheduleProgress();
+window.addEventListener("scroll", scheduleProgress, { passive: true });
+window.addEventListener("resize", scheduleProgress);
+document.addEventListener("portfolio:content", scheduleProgress);
 
 if (siteNav && "IntersectionObserver" in window) {
   const navLinks = [...siteNav.querySelectorAll('a[href^="#"]')];
-  const sectionLinks = new Map(navLinks.map((link) => [link.getAttribute("href").slice(1), link]));
-  const navObserver = new IntersectionObserver((entries) => {
-    const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-    if (!visible) return;
-    navLinks.forEach((link) => link.removeAttribute("aria-current"));
-    const active = sectionLinks.get(visible.target.id);
-    if (active) active.setAttribute("aria-current", "location");
-  }, { threshold: [0.15, 0.35, 0.65], rootMargin: "-20% 0px -60%" });
-
-  sectionLinks.forEach((link, id) => {
-    const section = document.getElementById(id);
-    if (section) navObserver.observe(section);
+  const visible = new Set();
+  const aliases = { about: "top", skills: "top", education: "experience" };
+  const activate = id => navLinks.forEach(link => {
+    if (link.hash === "#" + (aliases[id] || id)) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
   });
+  const navObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) visible.add(entry.target);
+      else visible.delete(entry.target);
+    });
+    const candidates = [...visible].sort((a, b) => b.getBoundingClientRect().top - a.getBoundingClientRect().top);
+    if (candidates[0]) activate(candidates[0].id);
+  }, { threshold: 0, rootMargin: "-12% 0px -55%" });
+  document.querySelectorAll("main > section[id], .portfolio-canvas > section[id]").forEach(section => navObserver.observe(section));
+  activate(location.hash.slice(1) || "top");
+  window.addEventListener("pagehide", event => { if (!event.persisted) navObserver.disconnect(); });
 }
 
 function projectCard(project, index) {
   const article = element("article", "project-card");
   article.id = `project-${project.slug || index}`;
+  article.dataset.repository = project.repository;
+  article.dataset.projectIndex = String(index);
   const shell = element("div", "project-shell");
   const topline = element("div", "project-topline");
   topline.append(
@@ -153,6 +145,14 @@ function projectCard(project, index) {
     live.rel = "noreferrer";
     links.append(live);
   }
+  const previewButton = element("button", "text-link project-preview-button", "Explore preview ↑");
+  previewButton.type = "button";
+  previewButton.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("portfolio:project-request", { detail: { index } }));
+    document.querySelector("#project-showcase")?.scrollIntoView({ behavior: window.portfolioMotion?.enabled ? "smooth" : "instant", block: "start" });
+    document.querySelector("#showcase-projects [aria-pressed='true']")?.focus({ preventScroll: true });
+  });
+  links.append(previewButton);
   copy.append(links);
   main.append(copy);
 
@@ -188,7 +188,7 @@ function projectCard(project, index) {
     const architecture = element("div", "");
     architecture.append(
       element("p", "architecture-label", "Architecture"),
-      element("p", "architecture-copy", project.architecture)
+      architectureSteps(project.architecture)
     );
     detailsBody.append(architecture);
   }
@@ -207,6 +207,13 @@ function projectCard(project, index) {
   return article;
 }
 
+function architectureSteps(text) {
+  const list = element("ol", "architecture-flow");
+  list.setAttribute("aria-label", "System architecture");
+  text.split(/\s*→\s*/).forEach(step => list.append(element("li", "", step)));
+  return list;
+}
+
 async function loadProjects() {
   if (!projectGrid) return;
   try {
@@ -215,6 +222,7 @@ async function loadProjects() {
     const projects = await response.json();
     projectGrid.replaceChildren(...projects.filter((project) => project.featured).map(projectCard));
     document.dispatchEvent(new CustomEvent("portfolio:projects", { detail: projects.filter(project => project.featured) }));
+    document.dispatchEvent(new CustomEvent("portfolio:content"));
   } catch (error) {
     projectGrid.prepend(element("p", "data-error", "Showing the saved project list; interactive details are temporarily unavailable."));
   }
@@ -250,7 +258,12 @@ function renderSkillEvidence(skill, userInitiated = false) {
     evidenceGroup("Professional / team work", skill.experience || []),
     evidenceGroup("Learning evidence", skill.learning || [])
   ].filter(Boolean).forEach((group) => groups.append(group));
-  skillPanel.replaceChildren(heading, groups);
+  const evidenceLink = element("a", "text-link skill-work-link", (skill.personal || []).length ? "Explore related project previews ↓" : "Browse all featured projects ↓");
+  evidenceLink.href = "#work";
+  evidenceLink.addEventListener("click", () => {
+    document.dispatchEvent(new CustomEvent("portfolio:project-filter", { detail: { name: (skill.personal || []).length ? skill.name : "" } }));
+  });
+  skillPanel.replaceChildren(heading, groups, evidenceLink);
   if (userInitiated) document.dispatchEvent(new CustomEvent("portfolio:skill", { detail: skill }));
   skillControls.querySelectorAll("button").forEach((button) => {
     button.setAttribute("aria-pressed", String(button.dataset.skill === skill.name));
@@ -272,7 +285,12 @@ async function loadSkillEvidence() {
       return button;
     });
     skillControls.replaceChildren(...buttons);
+    document.addEventListener("portfolio:skill-request", event => {
+      const skill = skills.find(item => item.name === event.detail.name);
+      if (skill) renderSkillEvidence(skill, true);
+    });
     document.dispatchEvent(new CustomEvent("portfolio:skills", { detail: skills }));
+    document.dispatchEvent(new CustomEvent("portfolio:content"));
     if (skills.length) renderSkillEvidence(skills[0]);
   } catch (error) {
     skillControls.replaceChildren(element("p", "data-error", "Skill evidence is temporarily unavailable."));
@@ -294,8 +312,17 @@ function contributionCard(contribution, index) {
     element("p", "contribution-role", `My role · ${contribution.role}`),
     element("p", "project-description", contribution.description)
   );
-  const list = element("ul", "contribution-list");
-  contribution.contributions.forEach((item) => list.append(element("li", "", item)));
+  const list = element("div", "contribution-progress");
+  list.setAttribute("aria-label", "Verified contribution areas");
+  list.append(element("p", "contribution-progress-label", "Explore my contribution · select an area"));
+  contribution.contributions.forEach((item, area) => {
+    const step = element("details", "contribution-step");
+    const summary = element("summary", "");
+    summary.append(element("span", "contribution-number", String(area + 1).padStart(2, "0")), element("span", "", contribution.contributionAreas?.[area] || `Contribution ${area + 1}`));
+    step.append(summary, element("div", "contribution-detail", item));
+    step.open = area === 0;
+    list.append(step);
+  });
   const tags = element("ul", "tag-list");
   tags.setAttribute("aria-label", `${contribution.name} technologies`);
   contribution.technologies.forEach((technology) => tags.append(element("li", "", technology)));
@@ -327,91 +354,13 @@ async function loadContributions() {
     if (!contributions.length) return;
     contributionGrid.replaceChildren(...contributions.map(contributionCard));
     contributionSection.hidden = false;
+    document.dispatchEvent(new CustomEvent("portfolio:content"));
   } catch (error) {
     contributionSection.hidden = false;
   }
 }
 
-let homeCertificates = [];
-let homeCertificatesLoaded = false;
-
-function issuerMonogram(issuer) {
-  const words = issuer.replace(/[^a-zA-Z0-9 ]/g, " ").split(/\s+/).filter(Boolean);
-  return words.slice(0, 2).map((word) => word[0]).join("").toUpperCase();
-}
-
-function homeCertificateCard(certificate) {
-  const details = element("details", "home-certificate-card");
-  const summary = element("summary", "home-certificate-summary");
-  summary.append(
-    element("span", "certificate-monogram", issuerMonogram(certificate.issuer)),
-    element("p", "certificate-kicker", `${certificate.issuer} · ${certificate.displayDate}`),
-    element("h3", "", certificate.title),
-    element("span", "certificate-expand-label", "View details")
-  );
-
-  const body = element("div", "home-certificate-details");
-  body.append(element("p", "", certificate.description));
-  const skills = element("ul", "certificate-skills");
-  skills.setAttribute("aria-label", `${certificate.title} skills`);
-  certificate.skills.forEach((skill) => skills.append(element("li", "", skill)));
-  body.append(skills);
-
-  const actions = element("div", "certificate-actions");
-  if (certificate.credentialUrl) {
-    const verify = element("a", "text-link", "Verify credential ↗");
-    verify.href = certificate.credentialUrl;
-    verify.target = "_blank";
-    verify.rel = "noreferrer";
-    actions.append(verify);
-  }
-  const original = element("a", "text-link", "View certificate ↗");
-  original.href = certificate.pdf || certificate.image;
-  original.target = "_blank";
-  original.rel = "noreferrer";
-  actions.append(original);
-  body.append(actions);
-  details.append(summary, body);
-
-  details.addEventListener("toggle", () => {
-    if (!details.open) return;
-    homeCertificateGrid.querySelectorAll("details[open]").forEach((item) => {
-      if (item !== details) item.open = false;
-    });
-  });
-  return details;
-}
-
-function filterHomeCertificates() {
-  if (!homeCertificateGrid || !homeCertificatesLoaded) return;
-  const query = homeCertificateSearch?.value.trim().toLowerCase() || "";
-  const filtered = homeCertificates.filter((certificate) => {
-    const haystack = [certificate.title, certificate.issuer, certificate.category, ...certificate.skills].join(" ").toLowerCase();
-    return query.split(/\s+/).filter(Boolean).every((term) => haystack.includes(term));
-  });
-  homeCertificateGrid.replaceChildren(...filtered.map(homeCertificateCard));
-  if (homeCertificateCount) homeCertificateCount.textContent = `${filtered.length} certificate${filtered.length === 1 ? "" : "s"}`;
-  if (!filtered.length) homeCertificateGrid.append(element("p", "empty-state", "No certificates match that search."));
-}
-
-async function loadHomeCertificates() {
-  if (!homeCertificateGrid) return;
-  try {
-    const response = await fetch("data/certificates.json", { cache: "no-cache" });
-    if (!response.ok) throw new Error("Certificate data could not be loaded.");
-    homeCertificates = (await response.json()).sort((a, b) => b.issued.localeCompare(a.issued));
-    homeCertificatesLoaded = true;
-    if (certificateTotal) certificateTotal.textContent = String(homeCertificates.length);
-    filterHomeCertificates();
-  } catch (error) {
-    if (homeCertificateCount) homeCertificateCount.textContent = "Unable to load certificates";
-    homeCertificateGrid.prepend(element("p", "data-error", "Showing the saved certificate links; search is temporarily unavailable."));
-  }
-}
-
-homeCertificateSearch?.addEventListener("input", filterHomeCertificates);
 
 loadProjects();
 loadSkillEvidence();
 loadContributions();
-loadHomeCertificates();

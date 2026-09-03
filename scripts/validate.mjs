@@ -65,7 +65,7 @@ runtime.media.matches = true;
 runtime.media.change();
 assert.equal(runtime.classes.has("motion-off"), true);
 
-const core = ["index.html", "styles.css", "motion.css", "js/motion-preference.js", "js/site.js", "js/showcase.js", "js/motion.js", "js/three-scenes.js"];
+const core = ["index.html", "styles.css", "motion.css", "js/motion-preference.js", "js/site.js", "js/showcase.js", "js/motion.js", "js/radar.js", "js/certificate-explorer.js", "js/three-scenes.js"];
 const vendor = ["js/vendor/three-r185/three.module.min.js", "js/vendor/three-r185/three.core.min.js"];
 const sizes = files => files.reduce((total, file) => {
   const buffer = readFileSync(path.join(root, file));

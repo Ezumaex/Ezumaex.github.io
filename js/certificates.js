@@ -93,6 +93,7 @@ function applyFilters() {
   });
   grid.replaceChildren(...filtered.map(certificateCard));
   count.textContent = `${filtered.length} certificate${filtered.length === 1 ? "" : "s"}`;
+  document.dispatchEvent(new CustomEvent("portfolio:content"));
   if (!filtered.length) {
     grid.append(element("p", "empty-state", "No certificates match those filters."));
   }

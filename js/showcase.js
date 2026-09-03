@@ -25,13 +25,17 @@
     const project = projects[active];
     const isEmpty = !project || !matches.length;
     gallery.hidden = !projects.length;
-    stage.hidden = caption.hidden = gallery.querySelector(".showcase-controls").hidden = isEmpty;
+    gallery.querySelector(".showcase-layout").hidden = isEmpty;
     empty.hidden = !isEmpty;
     if (isEmpty) empty.textContent = filterName + ": no matching featured project yet. See the Skills section for verified learning, professional, or collaborative evidence.";
     choices.replaceChildren(...matches.map(({ project: item, index }) => {
       const button = document.createElement("button");
       button.type = "button";
-      button.textContent = item.name;
+      const number = document.createElement("span"); number.className = "showcase-choice-number"; number.textContent = String(index + 1).padStart(2, "0");
+      const title = document.createElement("strong"); title.textContent = item.name;
+      const subtitle = document.createElement("span"); subtitle.className = "showcase-choice-meta"; subtitle.textContent = item.technologies.slice(0, 3).join(" / ");
+      const arrow = document.createElement("span"); arrow.className = "showcase-choice-arrow"; arrow.textContent = "↗"; arrow.setAttribute("aria-hidden", "true");
+      button.append(number, title, subtitle, arrow);
       button.dataset.project = String(index);
       button.setAttribute("aria-pressed", String(index === active));
       button.addEventListener("click", () => select(index, true));
@@ -43,11 +47,20 @@
       const source = project.previewImage || project.image;
       image.hidden = !source;
       if (source) { image.src = source; image.alt = project.imageAlt || project.name; }
+      gallery.dataset.preview = String(active % 2);
       document.querySelector("#showcase-title").textContent = project.name;
+      document.querySelector("#showcase-technologies").replaceChildren(...project.technologies.map(technology => {
+        const tag = document.createElement("li"); tag.textContent = technology; return tag;
+      }));
       document.querySelector("#showcase-counter").textContent = String(matches.findIndex(item => item.index === active) + 1).padStart(2, "0") + " / " + String(matches.length).padStart(2, "0") + " · " + project.context;
       document.querySelector("#showcase-architecture").textContent = project.architecture || project.subtitle || project.description;
       document.querySelector("#showcase-details").href = "#project-" + (project.slug || active);
     }
+    document.querySelectorAll(".project-card").forEach(card => {
+      const index = Number(card.dataset.projectIndex);
+      card.classList.toggle("is-related", !!filterName && matches.some(item => item.index === index));
+      card.classList.toggle("is-previewed", !isEmpty && index === active);
+    });
     window.portfolioShowcase = { projects, active, indices: matches.map(item => item.index), filter: filterName };
     publish();
   }
@@ -71,6 +84,14 @@
     else step(event.key === "ArrowRight" ? 1 : -1, true);
   });
   filter.addEventListener("change", () => { filterName = filter.value; render(); });
+  document.addEventListener("portfolio:project-filter", event => { filterName = event.detail.name; render(); });
+  document.addEventListener("portfolio:project-request", event => { filterName = ""; select(event.detail.index); });
+  document.querySelector("#showcase-details").addEventListener("click", () => {
+    const project = projects[active];
+    if (!project) return;
+    const details = document.querySelector("#project-" + project.slug + " details");
+    if (details) { details.open = true; details.querySelector("summary").focus({ preventScroll: true }); }
+  });
   document.addEventListener("portfolio:projects", event => { projects = event.detail; render(); });
   document.addEventListener("portfolio:skills", event => {
     skills = event.detail;
