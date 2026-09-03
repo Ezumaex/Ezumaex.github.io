@@ -18,7 +18,7 @@ Operating-system reduced motion and the saved local preference are a different c
 | Project showcase | Selected preview with HTML caption/technology tags, demand-rendered panels, and an ordinary-image fallback | Browser: selection and caption/tag animation worked; mobile gallery swap and missing-Three.js fallback switching worked |
 | Skill evidence | Existing JSON evidence connects skills with projects, professional work, or learning without proficiency scores | Browser: Java remained learning-only with no fabricated featured-project match; reduced-mode Networking readout was correct |
 | Certificate explorer | Large original-image preview, original/verification links, searchable choices, and selected credential details | Browser: preview contained; Java returned three results, an unmatched query returned none, and clearing restored nine |
-| Experience and contributions | Scroll-activated markers and native disclosure controls retain their underlying content | Source audit: progressive DOM enhancement; no separate browser completion claim for every disclosure in this pass |
+| Experience and contributions | Scroll-activated markers and native disclosure controls retain their underlying content | Production browser: experience marker activated and the export contribution disclosure opened with its verified text |
 | Summary and education | Staggered content/card entrances and expanding section rules | Production browser: 6 observed motion targets in Summary and 2 in Education |
 | Résumé and contact | Document-frame entrance, stable PDF, staggered contact links and arrow feedback | Production browser: 2 résumé and 7 contact motion targets; PDF served successfully |
 | Navigation | Observer-driven current-section state and transform-based reading progress | Production browser: correct current link for all nine content sections |
@@ -68,10 +68,19 @@ The exact generated `dist/` output was served at `http://127.0.0.1:4174/portfoli
 - Intentional unsupported-WebGL output preserved the radar and Networking evidence in HTML. This fault fixture can produce an expected Three.js context-creation diagnostic; it is not a normal-route production error.
 - The résumé returned HTTP 200 with `application/pdf`; certificate originals, preview textures, JSON, and relative Three.js modules loaded successfully under `/portfolio/`.
 
-The live tab previously recorded a `MutationObserver.observe` TypeError. The new DOM animation module uses explicit content-render events and IntersectionObserver instead; no MutationObserver remains in the first-party scripts. A refreshed live-page check is required before attributing or closing the reported error.
+The live tab previously recorded a `MutationObserver.observe` TypeError. The new DOM animation module uses explicit content-render events and IntersectionObserver instead; no MutationObserver remains in the first-party scripts. The error did not recur after refreshing the updated public page. The old log had no source line, so its precise original origin is not claimed.
 
-## Pending verification and limits
+## GitHub Pages verification
 
-- **Pending:** live deployment verification on GitHub Pages.
+- Runtime revision `ef12654bee901d81f1d2fbc42777cc3716db1f1e` published successfully through [Pages build 33780015186](https://github.com/Ezumaex/Ezumaex.github.io/actions/runs/33780015186).
+- Verified both the fresh-version URL and the normal [public homepage](https://ezumaex.github.io/). The normal URL initially reused an older cached document; an ordinary browser reload fetched the updated page and its versioned scripts.
+- Reloaded the user's already-open live tab as well. Both refreshed views loaded the new radar controls, with no new console warnings/errors during the checked live interactions. Old historical log entries were distinguished by timestamp.
+- Live Networking selection displayed professional evidence; project controls switched to Developer Portfolio; Java certificate search produced three matches and selected the correct credential title and original-image path.
+- Both Three.js modules, the radar/explorer/motion modules, JSON, and résumé returned HTTP 200 from the public domain with the correct MIME types. The résumé remains the existing public PDF.
+- The available browser requests reduced motion at the system level. Live checks therefore exercised the accessible static/HTML interaction path. Full sweep/3D motion was verified in localhost and the exact production output using the local-only test override; the override is ignored on the public domain.
+- No repositories were deleted, archived, or made public/private. Organization repositories, certificate facts, experience claims, and résumé contents were not changed by this update.
+
+## Limits
+
 - Firefox and physical-device testing were unavailable. No Firefox, real-touch-device, GPU utilization, battery, thermal, or hardware frame-pacing claims are made.
-- Results from the previous report are not carried forward as proof of this implementation. Additional browser checks should be recorded with their actual scope before marking the pending items complete.
+- Results from the previous report are not carried forward as proof of this implementation. Continuous animation on the live domain with system reduced motion disabled was not exercised by this browser.
