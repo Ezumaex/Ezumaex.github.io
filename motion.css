@@ -58,14 +58,17 @@
 .radar-stage.three-ready .radar-fallback { visibility: hidden; }
 .radar-nodes { position: absolute; inset: 0; z-index: 3; }
 .radar-node { position: absolute; left: var(--node-x); top: var(--node-y); transform: translate(-50%, -8px); min-width: 44px; min-height: 52px; padding: 4px 0; color: #b3ccc0; border: 0; background: transparent; cursor: pointer; }
-.radar-node > i { display: block; width: 7px; height: 7px; margin: 0 auto 6px; border-radius: 50%; background: #a7cbb9; box-shadow: 0 0 0 4px #a7cbb918; transition: box-shadow .25s, background .25s; }
+.radar-node > i { display: block; width: 7px; height: 7px; margin: 0 auto 6px; border-radius: 50%; background: #a7cbb9; box-shadow: 0 0 0 4px #a7cbb918; transition: transform .25s cubic-bezier(.16,1,.3,1), box-shadow .25s, background .25s; }
 .radar-node > span { display: block; padding: .12rem .32rem; border: 1px solid transparent; border-radius: .2rem; background: #052019d9; white-space: nowrap; font: .63rem/1.5 "JetBrains Mono", monospace; transition: transform .25s, background .25s, border-color .25s; }
 .radar-node:hover > span, .radar-node:focus-visible > span { transform: translateY(3px); color: #f2f7f3; border-color: #7ca892; }
+.radar-node:hover > i, .radar-node:focus-visible > i { transform: scale(1.55); background: #fff; box-shadow: 0 0 0 7px #bce3cd35, 0 0 22px #aee6cbcc; }
 .radar-node[aria-pressed="true"] > i { background: #eff9f1; box-shadow: 0 0 0 5px #c1e3cc35, 0 0 16px #b8dbc47d; }
 .radar-node[aria-pressed="true"] > span { color: #f2f7f3; border-color: #5d8d73; background: #214532; }
 .radar-node:focus-visible, .radar-actions :focus-visible { outline: 2px solid #e1f4e7; outline-offset: 3px; }
 .radar-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #d1e4d8; font: 1.2rem/1 "DM Serif Display", Georgia, serif; text-align: center; pointer-events: none; }
 .radar-center > span { display: block; margin-top: .6rem; color: #a4bfb0; font: .52rem/1 "JetBrains Mono", monospace; letter-spacing: .15em; white-space: nowrap; }
+.radar-stage:has(.radar-node:hover) .radar-center,
+.radar-stage:has(.radar-node:focus-visible) .radar-center { color: #f4fff8; text-shadow: 0 0 22px #91d9b0b3; }
 .radar-readout { min-height: 9.5rem; padding: .95rem 1rem .8rem; border: 1px solid #6f968447; border-radius: .3rem; background: #c3d8c906; }
 .radar-context { margin: 0 0 .35rem; color: #a8c2b4; font: .62rem/1.5 "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .06em; }
 .radar-readout h2 { margin: 0 0 .45rem; color: #e9f1eb; font-size: 1.25rem; letter-spacing: -.02em; }
@@ -237,6 +240,7 @@
   .contribution-detail { padding-left: 0; padding-right: .5rem; }
 }
 .motion-off *, .motion-off *::before, .motion-off *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+.motion-off .radar-node:hover > span, .motion-off .radar-node:focus-visible > span { transform: none; }
 .motion-off .hero-copy > *, .motion-off .reveal { opacity: 1 !important; transform: none !important; filter: none !important; }
 .motion-off .hero-canvas, .motion-off #project-canvas { display: none; }
 .motion-off .radar-fallback, .motion-off .showcase-fallback { visibility: visible !important; }

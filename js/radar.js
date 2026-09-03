@@ -18,7 +18,7 @@
     { name: "Java", label: "Java", x: -.38, y: .62 }
   ];
   let mapped = [], selected = null, scanning = false, webgl = false;
-  let visible = false, started = false, fallback = null;
+  let visible = false, started = false, fallback = null, pulseAnimation = null;
   const duration = matchMedia("(max-width: 768px), (pointer: coarse)").matches ? 3600 : 4800;
 
   function finish() {
@@ -73,6 +73,20 @@
     document.dispatchEvent(new CustomEvent("portfolio:radar-selection", { detail: node }));
     if (broadcast) document.dispatchEvent(new CustomEvent("portfolio:skill-request", { detail: skill }));
   }
+  function preview(node, button) {
+    if (!node || !button) return;
+    if (selected?.name !== node.name) select(node, false);
+    status.textContent = enabled() ? `Previewing ${node.label}` : `${node.label} selected`;
+    const point = button.querySelector("i");
+    if (!enabled() || !point?.animate) return;
+    pulseAnimation?.cancel();
+    pulseAnimation = point.animate([
+      { transform: "scale(1)" },
+      { transform: "scale(1.9)", offset: .42 },
+      { transform: "scale(1)" }
+    ], { duration: 560, easing: "cubic-bezier(.16,1,.3,1)" });
+    pulseAnimation.finished.then(() => { pulseAnimation = null; }, () => { pulseAnimation = null; });
+  }
   function syncMotion() {
     scanButton.hidden = !enabled();
     if (!enabled()) { cancelFallback(); finish(); }
@@ -106,6 +120,10 @@
       const label = document.createElement("span"); label.textContent = node.label;
       button.append(point, label);
       button.addEventListener("click", () => { select(node); scan(); });
+      button.addEventListener("pointerenter", event => {
+        if (event.pointerType === "mouse" || event.pointerType === "pen") preview(node, button);
+      });
+      button.addEventListener("focus", () => preview(node, button));
       return button;
     }));
     select(mapped[0], false);
@@ -127,6 +145,9 @@
   });
   document.addEventListener("portfolio:motion", syncMotion);
   document.addEventListener("visibilitychange", syncPlayback);
+  host.addEventListener("pointerleave", () => {
+    status.textContent = scanning ? "Scanning skill map" : enabled() ? "Select a skill" : "Reduced motion · hover still previews skills";
+  });
   const observer = "IntersectionObserver" in window ? new IntersectionObserver(([entry]) => {
     visible = entry.isIntersecting;
     if (visible && !started && enabled()) { started = true; scan(); }
@@ -136,7 +157,7 @@
   syncMotion();
   window.addEventListener("pagehide", event => {
     if (event.persisted) fallback?.pause();
-    else { cancelFallback(); observer?.disconnect(); }
+    else { pulseAnimation?.cancel(); cancelFallback(); observer?.disconnect(); }
   });
   window.addEventListener("pageshow", event => { if (event.persisted) syncPlayback(); });
 })();

@@ -437,6 +437,10 @@ test("radar nodes use exact evidence-backed skill names and motion has no uncond
     assert.doesNotMatch(code, /iterations\s*:\s*Infinity/, `${name} must not install an infinite Web Animation`);
   }
   assert.equal([...source.matchAll(/\brequestAnimationFrame\s*\(/g)].length, 1, "Three.js motion must share the guarded demand scheduler");
+  assert.match(radarSource, /button\.addEventListener\("pointerenter"/, "Fine-pointer hover must preview radar evidence");
+  assert.match(radarSource, /button\.addEventListener\("focus"/, "Keyboard focus must preview the same radar evidence");
+  assert.match(radarSource, /select\(node, false\)/, "Previewing must not change the separate Skills panel");
+  assert.match(radarSource, /duration: 560/, "Hover feedback must be finite");
 });
 
 console.log(`PASS: ${testCount} deterministic motion suites. Browser appearance and real GPU performance are not measured here.`);
